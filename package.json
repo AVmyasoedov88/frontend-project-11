@@ -8,5 +8,15 @@
   },
   "dependencies": {
     "lodash": "^4.17.21"
-  }
+  },
+  "name": "@hexlet/code",
+  "description": "[![Actions Status](https://github.com/AVmyasoedov88/frontend-project-11/workflows/hexlet-check/badge.svg)](https://github.com/AVmyasoedov88/frontend-project-11/actions)",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anton",
+  "license": "ISC"
 }
