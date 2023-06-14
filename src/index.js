@@ -1,16 +1,6 @@
-import './styles.scss';
-import 'bootstrap';
+// @ts-check
 
-// https://github.com/k1ntsugi1/frontend-project-lvl3/blob/main/dist/main.6adef979aa645ea90fbf.js
+import init from './init.js';
+import './style.css';
 
-const state = {
-    form: {
-        rssInputStatus: null,
-        inputValue: '',
-
-    },
-
-    feeds: []
-}
-
-
+init();
