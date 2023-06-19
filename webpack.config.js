@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 export default {
   entry: './src/index.js',
   
-  //mode: process.env.NODE_ENV || 'development',
+  mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
       {
@@ -51,5 +51,7 @@ export default {
     },
     open: true,
   },
-  mode: 'production'
+  stats: {
+    warnings: false,
+  },
 };

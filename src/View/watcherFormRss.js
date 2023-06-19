@@ -1,13 +1,17 @@
 import onChange from 'on-change';
+import { renderRss, renderErr } from '../Render/renderRssForm.js';
 
-const watchedState = onChange(state.form, (path, value) => {
-    console.log(state);
+
+const watchedStateRss = (state) => {
+  const watcher = onChange(state.form, (path, value) => {
     if (state.form.isValid === true) {
-      console.log("Можно отрисовывать");
-      render(state.form.value);
-      //убрать инвалид
+      renderRss();
+    } else {
+      renderErr(state);
     }
-    input.classList.toggle("is-invalid");
-  });
+  })
+  return watcher
+}
 
-export default watchedState;
+export { watchedStateRss};
+
