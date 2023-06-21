@@ -3,13 +3,17 @@ import { renderRss, renderErr } from '../Render/renderRssForm.js';
 
 
 const watchedStateRss = (state) => {
-  const watcher = onChange(state.form, (path, value) => {
+  const watcher = onChange(state, (path, value) => {
+    //console.log(path)
     if (state.form.isValid === true) {
-      renderRss();
-    } else {
-      renderErr(state);
+      renderRss(state.form.value);
     }
-  })
+   else {
+    //console.log(state.form.error);
+    renderErr(state.form.error);
+  }
+    
+ })
   return watcher
 }
 

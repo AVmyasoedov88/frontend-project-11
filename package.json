@@ -11,7 +11,6 @@
     "watch": "webpack --watch",
     "serve": "webpack serve",
     "start": "webpack serve"
-    
   },
   "repository": {
     "type": "git",
@@ -30,7 +29,7 @@
     },
     "testEnvironment": "jsdom"
   },
-  "main": "./src/index.js",
+  "main": "src/index.js",
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
@@ -65,8 +64,10 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "clean-webpack-plugin": "^4.0.0",
+    "i18next": "^23.2.1",
     "npm-check-updates": "^16.6.2",
     "on-change": "^4.0.2",
     "yup": "^1.2.0"
