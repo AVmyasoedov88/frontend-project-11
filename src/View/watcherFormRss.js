@@ -1,21 +1,34 @@
 import onChange from 'on-change';
 import { renderRss, renderErr } from '../Render/renderRssForm.js';
+//import { renderContentFeeds } from '../Render/renderContent.js';
 
 
 const watchedStateRss = (state) => {
   const watcher = onChange(state, (path, value) => {
-    //console.log(path)
-    if (state.form.isValid === true) {
-      renderRss(state.form.value);
-    }
-   else {
-    //console.log(state.form.error);
-    renderErr(state.form.error);
-  }
     
- })
+
+  })
+
+
   return watcher
 }
 
-export { watchedStateRss};
+
+const watchedError = (state) => {
+  const watcher = onChange(state.error, (path, value) => {
+    if (path === 'errorMessage') {
+     
+      renderErr(value)
+
+    }
+    if (path === 'errorStatus' && value === true) {
+      renderRss()
+      console.log("Отрисовка контента")
+    }
+
+  })
+  return watcher
+}
+
+export { watchedStateRss, watchedError };
 

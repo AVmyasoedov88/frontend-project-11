@@ -1,28 +1,42 @@
-import axios from "axios";
+import _ from 'lodash';
 
-/*const jsdom = require('jsdom');
-const {JSDOM} = jsdom;
+const  parser = (response) => {
+ try {
 
-class DOMParser {
-  parseFromString(s, contentType = 'text/html') {
-    return new JSDOM(s, {contentType}).window.document;
-  }
-}*/
+   const parser = new DOMParser()
+   
+   const result = parser.parseFromString(response.data.contents, 'application/xml');
+   
+   const id = _.uniqueId()
+   const feeds = { 
+     title: result.querySelector('channel title').textContent,
+     description: result.querySelector('channel description').textContent,
+     uniqueIdFeed: id
+   }
+   //console.log(feeds)
+   const items = Array.from(result.querySelectorAll('item'))
+   //console.log(items[0].querySelector('link').textContent)
+   
+   //console.log(items)
+   const topics = items.map((item) => {
+     return {
+       title: item.querySelector('title').textContent,
+       link: item.querySelector('link').textContent,
+       description: item.querySelector('description').textContent,
+       uniqueIdTopic: id,
+     }
+     
+   })
+   return [feeds, topics]
+ }
+ catch (error) {
+  throw new Error('RSS FUCK!')
+ }
+   
 
-const rssUrl = 'https://ru.hexlet.io/lessons.rss'
-const newUrl = new URL(`https://allorigins.hexlet.app/get?url=${rssUrl}`);
-console.log(newUrl.toString())
-
-
-
-const  parser = (data) => {
-const parser = new DOMParser()
-const result = parser.parseFromString(data.data.contents, "text/html");
-return result
+  
 }
 
 
-axios.get(newUrl)
-.then((response) => {
-  console.log(parser(response))
-})
+
+export {parser};

@@ -12,8 +12,8 @@ const validator = (data, state) => {
     const schema = yup
     .string()
     .url()
-    .notOneOf(state.form.feeds, state.i18n.t('form.errorDubl'));
-    return schema.validate(data, state.form.feeds);
+    .notOneOf(state.form.urls, state.i18n.t('form.errorDubl'));
+    return schema.validate(data, state.form.urls);
   };
 
 export default validator;
