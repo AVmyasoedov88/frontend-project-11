@@ -1,12 +1,20 @@
 import onChange from 'on-change';
 import { renderRss, renderErr } from '../Render/renderRssForm.js';
-//import { renderContentFeeds } from '../Render/renderContent.js';
+import { renderContentFeeds, renderFeeds, renderTopics } from '../Render/renderContent.js';
 
 
 const watchedStateRss = (state) => {
   const watcher = onChange(state, (path, value) => {
+   if(path === 'content.feeds') {
+    renderContentFeeds()
+    renderFeeds(value)
+    //console.log(value)
     
-
+   }
+    if(path === 'content.topics') {
+    
+      renderTopics(value)
+    }
   })
 
 

@@ -39,10 +39,6 @@ promise.then((i18nextInstance) => {
     topics: [],
     
   },
-  currentContent: {
-    currentFeed: [],
-    currentTopic: [],
-  },
   
    error: {
     errorStatus: null,
@@ -54,7 +50,8 @@ return state
 .then((state) => {
   const watchedStateRsS = watchedStateRss(state)
   const watchedErroR = watchedError(state)
-     handlerRss(state, watchedStateRsS, watchedErroR) 
+     handlerRss(state, watchedStateRsS, watchedErroR)
+     //refreshRss(state, watchedStateRsS, watchedErroR) 
 })
 
 
