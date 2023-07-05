@@ -6,7 +6,7 @@ const renderRss = () => {
   input.classList.remove('is-invalid')
   feedback.classList.add("text-success")
   feedback.innerHTML = 'RSS успешно загружен';
-  input.value = ''
+ // input.value = ''
   
 };
 

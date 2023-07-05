@@ -32,14 +32,16 @@ promise.then((i18nextInstance) => {
    form: {
     value: '',
     urls: [],
-    
+    btnAddStatus: 'notSend',
+    isInputClear: false
+        
    },
    content: {
     feeds: [],
     topics: [],
     
+    
   },
-  
    error: {
     errorStatus: null,
     errorMessage: null
