@@ -10,9 +10,7 @@ const upDate = (state, watchedStateRsS) => {
         const newUrl = getProxiUrl(url);
         return axios
             .get(newUrl.toString())
-            .catch((error) => {
-                throw new Error(error.message);
-            })
+            
             .then((response) => {
                 return parser(response);
             })
@@ -24,7 +22,7 @@ const upDate = (state, watchedStateRsS) => {
     Promise.all(promises)
         .then((parserDatas) => {
             parserDatas.map((parserData) => {
-                const [feeds, topics] = parserData;
+                const [, topics] = parserData;
 
                 const oldTopics = state.content.topics.map((topic) => {
                     return topic.map((item) => item.title);

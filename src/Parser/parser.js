@@ -9,12 +9,11 @@ const parser = (response) => {
       'application/xml'
     );
 
-    const id = _.uniqueId();
-    const feeds = {
+      const feeds = {
       title: result.querySelector('channel title').textContent,
       description: result.querySelector('channel description')
         .textContent,
-      id,
+      
     };
 
     const items = Array.from(result.querySelectorAll('item'));
@@ -24,12 +23,13 @@ const parser = (response) => {
         title: item.querySelector('title').textContent,
         link: item.querySelector('link').textContent,
         description: item.querySelector('description').textContent,
-        id,
+        id: _.uniqueId(),
       };
     });
-
+    
     return [feeds, topics];
   } catch (error) {
+    
     throw new Error('Ресурс не содержит валидный RSS');
   }
 };

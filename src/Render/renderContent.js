@@ -1,3 +1,4 @@
+
 const renderContentTitle = (nameTitle) => {
     const divCardBorder = document.createElement('div');
     const cardBody = document.createElement('div');
@@ -13,8 +14,6 @@ const renderContentTitle = (nameTitle) => {
 };
 
 const renderFeeds = (feeds) => {
-    //feeds.forEach((elememt) => {
-    //console.log(feeds[feeds.length])
     const ulFeed = document.querySelector('.feeds ul');
     const li = document.createElement('li');
     const h3 = document.createElement('h3');
@@ -27,16 +26,13 @@ const renderFeeds = (feeds) => {
     p.innerHTML = feeds[feeds.length - 1].description;
     li.append(h3, p);
     ulFeed.prepend(li);
-    //})
 };
 
 const renderTopics = (topics) => {
     const ulTopics = document.querySelector('.posts ul');
-    //console.log(topics)
 
     topics.forEach((element) => {
         element.forEach((item) => {
-            //console.log(element.description)
             const li = document.createElement('li');
             const a = document.createElement('a');
             const button = document.createElement('button');
@@ -48,27 +44,26 @@ const renderTopics = (topics) => {
                 'border-0',
                 'border-end-0'
             );
+
             a.classList.add('fw-bold');
-            a.dataset.id = 12;
+            a.dataset.id = item.id;
             a.setAttribute('target', '_blank');
             a.setAttribute('rel', 'noopener noreferrer');
             button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
             button.setAttribute('type', 'button');
-            button.dataset.id = 12;
+            button.dataset.id = item.id;
             button.dataset.bsToggle = 'modal';
             button.dataset.bsTarget = '#modal';
             a.setAttribute('href', item.link);
             a.innerHTML = item.title;
             button.innerHTML = 'Просмотр';
             li.append(a, button);
-
             ulTopics.prepend(li);
         });
     });
 };
 
 const renderContentFeeds = () => {
-    //console.log(content)
     const feedsContaner = document.querySelector('.feeds');
     const postsContaner = document.querySelector('.posts');
     if (feedsContaner.textContent === '') {
@@ -79,9 +74,6 @@ const renderContentFeeds = () => {
         titleFeed.innerHTML = 'Фиды';
         titlePost.innerHTML = 'Посты';
     }
-
-    //renderFeeds(state.currentContent.currentFeed)
-    //renderTopics(state.currentContent.currentTopic)
 };
 
 export { renderContentFeeds, renderFeeds, renderTopics };
