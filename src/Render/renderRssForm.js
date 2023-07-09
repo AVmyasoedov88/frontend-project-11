@@ -7,6 +7,7 @@ const renderRss = () => {
   feedback.classList.add("text-success")
   feedback.innerHTML = 'RSS успешно загружен';
   input.value = ''
+  input.focus()
   
 };
 

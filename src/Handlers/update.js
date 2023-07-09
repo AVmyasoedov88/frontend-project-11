@@ -10,10 +10,11 @@ const upDate = (state, watchedStateRsS) => {
         const newUrl = getProxiUrl(url);
         return axios
             .get(newUrl.toString())
-            
+
             .then((response) => {
                 return parser(response);
             })
+
             .catch((error) => {
                 throw new Error(error.message);
             });
