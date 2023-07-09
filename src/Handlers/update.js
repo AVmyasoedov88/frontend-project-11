@@ -3,7 +3,7 @@ import axios from 'axios';
 import { parser } from '../Parser/parser.js';
 import _ from 'lodash';
 
-const upDate = (state, watchedStateRsS) => {
+const upDate = (state, watchedStateRsS, watchedErroR) => {
     const urls = state.form.urls;
 
     const promises = urls.map((url) => {
@@ -13,10 +13,6 @@ const upDate = (state, watchedStateRsS) => {
 
             .then((response) => {
                 return parser(response);
-            })
-
-            .catch((error) => {
-                throw new Error(error.message);
             });
     });
 
@@ -42,10 +38,12 @@ const upDate = (state, watchedStateRsS) => {
             });
         })
 
-        .then(() => setTimeout(() => upDate(state, watchedStateRsS), 5000))
+        .then(() =>
+            setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000)
+        )
 
-        .catch((error) => {
-            throw new Error(error);
+        .catch(() => {
+            watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
         })
         .finally(() => {
             console.log(state);

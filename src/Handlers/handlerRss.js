@@ -14,9 +14,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
 
         validator(formData.get('url'), state)
             .then((rss) => {
-                watchedStateRsS.form.value = rss; //важно!
-                //watchedStateRsS.form.urls.push(rss);
-                //watchedErroR.errorStatus = true;
+                watchedStateRsS.form.value = rss;
                 watchedStateRsS.form.btnAddStatus = 'send';
             })
 
@@ -24,7 +22,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
                 return getProxiUrl(state.form.value);
             })
             .then((newUrl) => {
-              return  axios.get(newUrl.toString()).catch(() => {
+                return axios.get(newUrl.toString()).catch(() => {
                     watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
                 });
             })
@@ -35,10 +33,12 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
                 state.form.urls.push(state.form.value);
                 watchedStateRsS.content.feeds.push(feeds);
                 watchedStateRsS.content.topics.push(topics);
-                //watchedStateRsS.form.btnAddStatus = 'notSend';
             })
             .then(() => {
-                setTimeout(() => upDate(state, watchedStateRsS), 5000);
+                setTimeout(
+                    () => upDate(state, watchedStateRsS, watchedErroR),
+                    5000
+                );
             })
 
             .then(() => makeModalWindow(state))

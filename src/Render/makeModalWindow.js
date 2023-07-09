@@ -1,4 +1,3 @@
-//modal
 const makeModalWindow = (state) => {
     const modalButtons = document.querySelectorAll('.btn-sm');
     const modalHeader = document.querySelector('.modal-header');
@@ -6,7 +5,6 @@ const makeModalWindow = (state) => {
 
     modalButtons.forEach((modalButton) => {
         modalButton.addEventListener('click', (event) => {
-            //const topicsList = document.querySelectorAll('li > a');
             event.preventDefault();
             const idmodalButton = event.target.dataset.id;
             console.log(idmodalButton);
@@ -17,21 +15,18 @@ const makeModalWindow = (state) => {
             currentTopic.classList.add('fw-normal');
 
             const topics = state.content.topics;
-            //console.log(topics)
 
-            const x = {};
+            const dataForModal = {};
             topics.map((topic) => {
                 const temp = topic.filter((item) => item.id === idmodalButton);
                 return temp.map((obj) => {
-                    (x.title = obj.title), (x.description = obj.description);
+                    (dataForModal.title = obj.title),
+                        (dataForModal.description = obj.description);
                 });
             });
 
-            modalHeader.textContent = x.title;
-            modalBody.textContent = x.description;
-            console.log(x);
-            //const [titleForModal, descriptionForModal] = currentTopic
-            //console.log(titleForModal)
+            modalHeader.textContent = dataForModal.title;
+            modalBody.textContent = dataForModal.description;
         });
     });
 };

@@ -1,37 +1,35 @@
 import _ from 'lodash';
 
 const parser = (response) => {
-  try {
-    const parser = new DOMParser();
+    try {
+        const parser = new DOMParser();
 
-    const result = parser.parseFromString(
-      response.data.contents,
-      'application/xml'
-    );
+        const result = parser.parseFromString(
+            response.data.contents,
+            'application/xml'
+        );
 
-      const feeds = {
-      title: result.querySelector('channel title').textContent,
-      description: result.querySelector('channel description')
-        .textContent,
-      
-    };
+        const feeds = {
+            title: result.querySelector('channel title').textContent,
+            description: result.querySelector('channel description')
+                .textContent,
+        };
 
-    const items = Array.from(result.querySelectorAll('item'));
+        const items = Array.from(result.querySelectorAll('item'));
 
-    const topics = items.map((item) => {
-      return {
-        title: item.querySelector('title').textContent,
-        link: item.querySelector('link').textContent,
-        description: item.querySelector('description').textContent,
-        id: _.uniqueId(),
-      };
-    });
-    
-    return [feeds, topics];
-  } catch (error) {
-    
-    throw new Error('Ресурс не содержит валидный RSS');
-  }
+        const topics = items.map((item) => {
+            return {
+                title: item.querySelector('title').textContent,
+                link: item.querySelector('link').textContent,
+                description: item.querySelector('description').textContent,
+                id: _.uniqueId(),
+            };
+        });
+
+        return [feeds, topics];
+    } catch (error) {
+        throw new Error('Ресурс не содержит валидный RSS');
+    }
 };
 
 export { parser };
