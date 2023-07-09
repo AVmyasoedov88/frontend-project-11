@@ -7,9 +7,9 @@ const init = () => {
     const promise = new Promise((resolve) => {
         const i18nextInstance = i18next.createInstance();
         i18nextInstance.init({
-            lng: 'ru',
-            debug: true,
-            resources: ru,
+            'lng': 'ru',
+            'debug': true,
+            'resources': ru
         });
         resolve(i18nextInstance);
     });
@@ -17,26 +17,26 @@ const init = () => {
     promise
         .then((i18nextInstance) => {
             const state = {
-                i18n: i18nextInstance,
-                form: {
-                    value: '',
-                    urls: [],
-                    btnAddStatus: 'notSend',
+                'i18n': i18nextInstance,
+                'content': {
+                    'feeds': [],
+                    'topics': []
                 },
-                content: {
-                    feeds: [],
-                    topics: [],
+                'form': {
+                    'value': '',
+                    'urls': [],
+                    'btnAddStatus': 'notSend'
                 },
-                error: {
-                    errorStatus: null,
-                    errorMessage: null,
-                },
+                'error': {
+                    'errorMessage': null,
+                    'errorStatus': null,
+                }
             };
             return state;
         })
         .then((state) => {
-            const watchedStateRsS = watchedStateRss(state);
-            const watchedErroR = watchedError(state);
+            const watchedStateRsS = watchedStateRss(state),
+                watchedErroR = watchedError(state);
             handlerRss(state, watchedStateRsS, watchedErroR);
         });
 };

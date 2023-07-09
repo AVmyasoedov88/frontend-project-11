@@ -5,7 +5,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "prettier",
+        //"prettier",
         "airbnb"
     ],
     "parserOptions": {

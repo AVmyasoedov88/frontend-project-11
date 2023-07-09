@@ -7,13 +7,13 @@ import { makeModalWindow } from '../Render/makeModalWindow.js';
 
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
     const form = document.querySelector('.rss-form');
-    
+
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        
+
         validator(formData.get('url'), state)
-        .then((rss) => {
+            .then((rss) => {
                 state.error.errorMessage = '';
                 watchedStateRsS.form.value = rss;
                 watchedStateRsS.form.btnAddStatus = 'send';
@@ -25,7 +25,6 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             .then((newUrl) => {
                 return axios.get(newUrl.toString()).catch(() => {
                     throw new Error(state.i18n.t('form.errorAxios'));
-                    
                 });
             })
 
@@ -47,7 +46,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             .then(() => makeModalWindow(state))
 
             .catch((err) => {
-               // watchedErroR.errorStatus = false;
+                // watchedErroR.errorStatus = false;
                 watchedErroR.errorMessage = err.message;
             })
             .finally(() => {
