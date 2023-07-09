@@ -24,7 +24,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
                 return getProxiUrl(state.form.value);
             })
             .then((newUrl) => {
-                axios.get(newUrl.toString()).catch(() => {
+              return  axios.get(newUrl.toString()).catch(() => {
                     watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
                 });
             })
