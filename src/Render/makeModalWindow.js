@@ -7,7 +7,6 @@ const makeModalWindow = (state) => {
         modalButton.addEventListener('click', (event) => {
             event.preventDefault();
             const idmodalButton = event.target.dataset.id;
-            console.log(idmodalButton);
             const currentTopic = document.querySelector(
                 `[data-id="${idmodalButton}"]`
             );

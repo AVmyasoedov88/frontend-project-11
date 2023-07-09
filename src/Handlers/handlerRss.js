@@ -7,17 +7,16 @@ import { makeModalWindow } from '../Render/makeModalWindow.js';
 
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
     const form = document.querySelector('.rss-form');
- 
+    
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-
+        
         validator(formData.get('url'), state)
-            .then((rss) => {
+        .then((rss) => {
+                state.error.errorMessage = '';
                 watchedStateRsS.form.value = rss;
                 watchedStateRsS.form.btnAddStatus = 'send';
-                state.error.errorMessage = ''
-                
             })
 
             .then(() => {
@@ -25,9 +24,11 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             })
             .then((newUrl) => {
                 return axios.get(newUrl.toString()).catch(() => {
-                    watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
+                    throw new Error(state.i18n.t('form.errorAxios'));
+                    
                 });
             })
+
             .then((response) => {
                 return parser(response);
             })
@@ -46,12 +47,12 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             .then(() => makeModalWindow(state))
 
             .catch((err) => {
-                watchedErroR.errorStatus = false;
+               // watchedErroR.errorStatus = false;
                 watchedErroR.errorMessage = err.message;
             })
             .finally(() => {
                 watchedStateRsS.form.btnAddStatus = 'notSend';
-                                console.log(state);
+                console.log(state);
             });
     });
 };
