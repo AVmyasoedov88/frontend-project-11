@@ -7,7 +7,7 @@ import { makeModalWindow } from '../Render/makeModalWindow.js';
 
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
     const form = document.querySelector('.rss-form');
-
+ 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -16,6 +16,8 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             .then((rss) => {
                 watchedStateRsS.form.value = rss;
                 watchedStateRsS.form.btnAddStatus = 'send';
+                state.error.errorMessage = ''
+                
             })
 
             .then(() => {
@@ -49,7 +51,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             })
             .finally(() => {
                 watchedStateRsS.form.btnAddStatus = 'notSend';
-                console.log(state);
+                                console.log(state);
             });
     });
 };

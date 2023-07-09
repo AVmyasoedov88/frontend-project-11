@@ -3,6 +3,7 @@ import axios from 'axios';
 import { parser } from '../Parser/parser.js';
 import _ from 'lodash';
 
+
 const upDate = (state, watchedStateRsS, watchedErroR) => {
     const urls = state.form.urls;
 
@@ -10,10 +11,14 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
         const newUrl = getProxiUrl(url);
         return axios
             .get(newUrl.toString())
+            .catch(() => {
+                watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
+            })
 
             .then((response) => {
                 return parser(response);
-            });
+            })
+            
     });
 
     Promise.all(promises)
@@ -43,7 +48,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
         )
 
         .catch(() => {
-            watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
+            //watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
         })
         .finally(() => {
             console.log(state);
