@@ -5,7 +5,6 @@ import axios from 'axios';
 import { upDate } from './update.js';
 import { makeModalWindow } from '../Render/makeModalWindow.js';
 
-
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
     const form = document.querySelector('.rss-form');
 
@@ -19,18 +18,15 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
                 //watchedStateRsS.form.urls.push(rss);
                 //watchedErroR.errorStatus = true;
                 watchedStateRsS.form.btnAddStatus = 'send';
-                
             })
-  
+
             .then(() => {
                 return getProxiUrl(state.form.value);
             })
             .then((newUrl) => {
-                return axios.get(newUrl.toString())
-                .catch(() => {
-                    watchedErroR.errorMessage = state.i18n.form.errorAxios;
-                })
-                
+                axios.get(newUrl.toString()).catch(() => {
+                    watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
+                });
             })
             .then((response) => {
                 return parser(response);
@@ -50,7 +46,6 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
             .catch((err) => {
                 watchedErroR.errorStatus = false;
                 watchedErroR.errorMessage = err.message;
-               
             })
             .finally(() => {
                 watchedStateRsS.form.btnAddStatus = 'notSend';
