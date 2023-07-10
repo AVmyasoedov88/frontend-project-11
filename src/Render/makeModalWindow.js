@@ -18,7 +18,7 @@ const makeModalWindow = (state) => {
       topics.map((topic) => {
         const temp = topic.filter((item) => item.id === idmodalButton);
         return temp.map((obj) => {
-          dataForModal.title = obj.title
+          dataForModal.title = obj.title;
           dataForModal.description = obj.description;
         });
       });

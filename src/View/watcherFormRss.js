@@ -7,7 +7,7 @@ import {
 } from '../Render/renderContent.js';
 
 const input = document.querySelector('.form-control'),
-    watchedStateRss = (state) => {
+  watchedStateRss = (state) => {
     const watcher = onChange(state, (path, value) => {
       if (path === 'form.value') {
         renderRss();

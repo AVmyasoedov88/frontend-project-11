@@ -26,8 +26,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
       if (newTopicS.length !== 0) {
         watchedStateRsS.content.topics.push(newTopicS);
       }
-    }),
-    )
+    }))
     .then(() =>
       setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
 };
