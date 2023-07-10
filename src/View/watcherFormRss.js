@@ -6,9 +6,9 @@ import {
   renderTopics,
 } from '../Render/renderContent.js';
 
-const input = document.querySelector('.form-control');
-const watchedStateRss = (state) => {
-  const watcher = onChange(state, (path, value) => {
+const input = document.querySelector('.form-control'),
+    watchedStateRss = (state) => {
+    const watcher = onChange(state, (path, value) => {
       if (path === 'form.value') {
         renderRss();
       }

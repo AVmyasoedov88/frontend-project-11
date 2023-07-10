@@ -19,7 +19,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
     .then((parserDatas) => parserDatas.map((parserData) => {
       const [, topics] = parserData;
       const oldTopics = state.content.topics.map((topic) => topic.map((item) => item.title));
-      const flatOldTopics = _.flatten(oldTopics)
+      const flatOldTopics = _.flatten(oldTopics);
       const newTopicS = topics.filter(
         (topic) => !flatOldTopics.includes(topic.title),
       );
@@ -27,7 +27,8 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
         watchedStateRsS.content.topics.push(newTopicS);
       }
     }),
-    ).then(() =>
+    )
+    .then(() =>
       setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
 };
 export default upDate;

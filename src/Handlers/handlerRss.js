@@ -21,9 +21,10 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
 
       .then(() => getProxiUrl(state.form.value))
       .then((newUrl) => axios.get(newUrl.toString()).catch(() => {
-          throw new Error(state.i18n.t('form.errorAxios'));
-        }),
-      ).then((response) => parser(response))
+        throw new Error(state.i18n.t('form.errorAxios'));
+      }),
+      )
+      .then((response) => parser(response))
       .then(([feeds, topics]) => {
         state.form.urls.push(state.form.value);
         watchedStateRsS.content.feeds.push(feeds);

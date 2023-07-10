@@ -18,10 +18,10 @@ const parser = (response) => {
 
     const topics = items.map((item) => {
       return {
-          title: item.querySelector('title').textContent,
-          link: item.querySelector('link').textContent,
-          description: item.querySelector('description').textContent,
-          id: _.uniqueId(),
+        title: item.querySelector('title').textContent,
+        link: item.querySelector('link').textContent,
+        description: item.querySelector('description').textContent,
+        id: _.uniqueId(),
       };
     });
 
