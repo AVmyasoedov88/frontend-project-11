@@ -9,7 +9,6 @@ const __dirname = path.dirname(__filename);
 export default {
   entry: './src/index.js',
 
-  // eslint-disable-next-line no-undef
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [

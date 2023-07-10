@@ -3,3 +3,5 @@
 dist
 assets
 .prettierrc.json
+.eslintignore
+.npmrc
