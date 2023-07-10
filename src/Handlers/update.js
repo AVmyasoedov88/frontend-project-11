@@ -17,19 +17,17 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
 
   Promise.all(promises)
     .then((parserDatas) => parserDatas.map((parserData) => {
-        const [, topics] = parserData;
-        const oldTopics = state.content.topics.map((topic) => topic.map((item) => item.title));
-        const flatOldTopics = _.flatten(oldTopics)
-        const newTopicS = topics.filter(
-            (topic) => !flatOldTopics.includes(topic.title)
-          );
-        if (newTopicS.length !== 0) {
-          watchedStateRsS.content.topics.push(newTopicS);
-        }
-      })
-    )
-    .then(() =>
-      setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000)
-    );
+      const [, topics] = parserData;
+      const oldTopics = state.content.topics.map((topic) => topic.map((item) => item.title));
+      const flatOldTopics = _.flatten(oldTopics)
+      const newTopicS = topics.filter(
+        (topic) => !flatOldTopics.includes(topic.title),
+      );
+      if (newTopicS.length !== 0) {
+        watchedStateRsS.content.topics.push(newTopicS);
+      }
+    }),
+    ).then(() =>
+      setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
 };
 export default upDate;

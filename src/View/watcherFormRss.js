@@ -8,7 +8,7 @@ import {
 
 const input = document.querySelector('.form-control');
 const watchedStateRss = (state) => {
-    const watcher = onChange(state, (path, value) => {
+  const watcher = onChange(state, (path, value) => {
       if (path === 'form.value') {
         renderRss();
       }
