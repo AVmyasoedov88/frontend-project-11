@@ -6,8 +6,8 @@ import {
   renderTopics,
 } from '../Render/renderContent.js';
 
-const input = document.querySelector('.form-control')
-const  watchedStateRss = (state) => {
+const input = document.querySelector('.form-control');
+const watchedStateRss = (state) => {
     const watcher = onChange(state, (path, value) => {
       if (path === 'form.value') {
         renderRss();
@@ -23,7 +23,7 @@ const  watchedStateRss = (state) => {
 
       if (path === 'form.btnAddStatus') {
         const btn = document.querySelector(
-          '.h-100, btn btn-lg btn-primary px-sm-5'
+          '.h-100, btn btn-lg btn-primary px-sm-5',
         );
         // console.log(btn)
         if (value === 'send') {

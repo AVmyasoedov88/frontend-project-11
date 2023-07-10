@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import handlerRss from './Handlers/handlerRss.js';
-import {watchedStateRss, watchedError} from './View/watcherFormRss.js';
+import { watchedStateRss, watchedError } from './View/watcherFormRss.js';
 import ru from './Text/ru.js';
 
 const init = () => {

@@ -16,17 +16,13 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
   });
 
   Promise.all(promises)
-    .then((parserDatas) =>
-      parserDatas.map((parserData) => {
+    .then((parserDatas) => parserDatas.map((parserData) => {
         const [, topics] = parserData;
-        const oldTopics = state.content.topics.map((topic) => {
-          return topic.map((item) => item.title);
-        });
-        const flatOldTopics = _.flatten(oldTopics),
-          newTopicS = topics.filter(
+        const oldTopics = state.content.topics.map((topic) => topic.map((item) => item.title));
+        const flatOldTopics = _.flatten(oldTopics)
+        const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title)
           );
-
         if (newTopicS.length !== 0) {
           watchedStateRsS.content.topics.push(newTopicS);
         }

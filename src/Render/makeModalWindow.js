@@ -8,18 +8,18 @@ const makeModalWindow = (state) => {
       event.preventDefault();
       const idmodalButton = event.target.dataset.id;
       const currentTopic = document.querySelector(
-        `[data-id="${idmodalButton}"]`
+        `[data-id="${idmodalButton}"]`,
       );
       currentTopic.classList.remove('fw-bold');
       currentTopic.classList.add('fw-normal');
 
-      const {topics} = state.content;
+      const { topics } = state.content;
       const dataForModal = {};
       topics.map((topic) => {
         const temp = topic.filter((item) => item.id === idmodalButton);
         return temp.map((obj) => {
-          (dataForModal.title = obj.title),
-            (dataForModal.description = obj.description);
+        dataForModal.title = obj.title,
+        dataForModal.description = obj.description;
         });
       });
 
