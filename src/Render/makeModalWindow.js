@@ -1,23 +1,25 @@
 const makeModalWindow = (state) => {
-  let modalButtons = document.querySelectorAll('.btn-sm'),
-    modalHeader = document.querySelector('.modal-header'),
-    modalBody = document.querySelector('.modal-body');
+  const modalButtons = document.querySelectorAll('.btn-sm');
+  const modalHeader = document.querySelector('.modal-header');
+  const modalBody = document.querySelector('.modal-body');
 
   modalButtons.forEach((modalButton) => {
     modalButton.addEventListener('click', (event) => {
       event.preventDefault();
-      let idmodalButton = event.target.dataset.id,
-        currentTopic = document.querySelector(`[data-id="${idmodalButton}"]`);
+      const idmodalButton = event.target.dataset.id;
+      const currentTopic = document.querySelector(
+        `[data-id="${idmodalButton}"]`
+      );
       currentTopic.classList.remove('fw-bold');
       currentTopic.classList.add('fw-normal');
 
-      let { topics } = state.content,
-        dataForModal = {};
+      const {topics} = state.content;
+      const dataForModal = {};
       topics.map((topic) => {
         const temp = topic.filter((item) => item.id === idmodalButton);
         return temp.map((obj) => {
-          dataForModal.title = obj.title,
-          dataForModal.description = obj.description;
+          (dataForModal.title = obj.title),
+            (dataForModal.description = obj.description);
         });
       });
 
@@ -27,4 +29,4 @@ const makeModalWindow = (state) => {
   });
 };
 
-export default  makeModalWindow;
+export default makeModalWindow;
