@@ -1,9 +1,9 @@
-import { parser } from '../Parser/parser.js';
-import validator from '../Validator/validator.js';
-import { getProxiUrl } from './getProxiUrl.js';
 import axios from 'axios';
-import { upDate } from './update.js';
-import { makeModalWindow } from '../Render/makeModalWindow.js';
+import  parser  from '../Parser/parser.js';
+import validator from '../Validator/validator.js';
+import  getProxiUrl from './getProxiUrl.js';
+import upDate  from './update.js';
+import makeModalWindow  from '../Render/makeModalWindow.js';
 
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
   const form = document.querySelector('.rss-form');
@@ -19,9 +19,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
         watchedStateRsS.form.btnAddStatus = 'send';
       })
 
-      .then(() => {
-        return getProxiUrl(state.form.value);
-      })
+      .then(() => getProxiUrl(state.form.value))
       .then((newUrl) => {
         return axios.get(newUrl.toString()).catch(() => {
           throw new Error(state.i18n.t('form.errorAxios'));

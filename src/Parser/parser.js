@@ -31,4 +31,4 @@ const parser = (response) => {
   }
 };
 
-export { parser };
+export default parser;
