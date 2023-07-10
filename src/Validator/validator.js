@@ -1,13 +1,13 @@
-import * as yup from "yup";
-import { setLocale } from "yup";
+import * as yup from 'yup';
+import { setLocale } from 'yup';
 const validator = (data, state) => {
   setLocale({
     mixed: {
-      default: "field_invalid",
+      default: 'field_invalid',
     },
     string: {
-      min: state.i18n.t("form.errorLength"),
-      url: state.i18n.t("form.errorURL"),
+      min: state.i18n.t('form.errorLength'),
+      url: state.i18n.t('form.errorURL'),
     },
   });
   const schema = yup
@@ -15,7 +15,7 @@ const validator = (data, state) => {
     .url()
     .min(1)
     .trim()
-    .notOneOf(state.form.urls, state.i18n.t("form.errorDubl"));
+    .notOneOf(state.form.urls, state.i18n.t('form.errorDubl'));
   return schema.validate(data, state);
 };
 

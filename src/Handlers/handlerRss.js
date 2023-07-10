@@ -1,22 +1,22 @@
-import { parser } from "../Parser/parser.js";
-import validator from "../Validator/validator.js";
-import { getProxiUrl } from "./getProxiUrl.js";
-import axios from "axios";
-import { upDate } from "./update.js";
-import { makeModalWindow } from "../Render/makeModalWindow.js";
+import { parser } from '../Parser/parser.js';
+import validator from '../Validator/validator.js';
+import { getProxiUrl } from './getProxiUrl.js';
+import axios from 'axios';
+import { upDate } from './update.js';
+import { makeModalWindow } from '../Render/makeModalWindow.js';
 
 const handlerRss = (state, watchedStateRsS, watchedErroR) => {
-  const form = document.querySelector(".rss-form");
+  const form = document.querySelector('.rss-form');
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    validator(formData.get("url"), state)
+    validator(formData.get('url'), state)
       .then((rss) => {
-        state.error.errorMessage = "";
+        state.error.errorMessage = '';
         watchedStateRsS.form.value = rss;
-        watchedStateRsS.form.btnAddStatus = "send";
+        watchedStateRsS.form.btnAddStatus = 'send';
       })
 
       .then(() => {
@@ -24,7 +24,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
       })
       .then((newUrl) => {
         return axios.get(newUrl.toString()).catch(() => {
-          throw new Error(state.i18n.t("form.errorAxios"));
+          throw new Error(state.i18n.t('form.errorAxios'));
         });
       })
 
@@ -47,7 +47,7 @@ const handlerRss = (state, watchedStateRsS, watchedErroR) => {
         watchedErroR.errorMessage = err.message;
       })
       .finally(() => {
-        watchedStateRsS.form.btnAddStatus = "notSend";
+        watchedStateRsS.form.btnAddStatus = 'notSend';
         console.log(state);
       });
   });
