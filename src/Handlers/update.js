@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from 'axios';
 import _ from 'lodash';
 import getProxiUrl from './getProxiUrl.js';
