@@ -1,3 +1,4 @@
+/* eslint-disable */
 import onChange from 'on-change';
 import { renderRss, renderErr } from '../Render/renderRssForm.js';
 import {

@@ -16,7 +16,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
   });
 
   Promise.all(promises)
-    .then((parserDatas) => parserDatas.map((parserData) => {
+    .then((parserDatas) => parserDatas.map(parserData => {
       const [, topics] = parserData;
       const oldTopics = state.content.topics.map((topic) => topic.map((item) => item.title));
       const flatOldTopics = _.flatten(oldTopics);
@@ -27,7 +27,6 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
         watchedStateRsS.content.topics.push(newTopicS);
       }
     }))
-    .then(() =>
-      setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
+    .then(() => setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
 };
 export default upDate;

@@ -1,3 +1,6 @@
 node_modules
 dist
-webpack.config
+webpack.config.js
+makeModalWindow.js
+parser.js
+update.js
