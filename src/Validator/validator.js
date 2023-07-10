@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import {setLocale} from 'yup';
+import { setLocale } from 'yup';
 
 const validator = (data, state) => {
   setLocale({

@@ -6,7 +6,7 @@ const parser = (response) => {
 
     const result = parse.parseFromString(
       response.data.contents,
-      'application/xml',
+      'application/xml'
     );
 
     const feeds = {
