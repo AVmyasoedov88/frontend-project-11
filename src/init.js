@@ -1,6 +1,6 @@
-import { handlerRss } from './Handlers/handlerRss.js';
-import { watchedStateRss, watchedError } from './View/watcherFormRss.js';
 import i18next from 'i18next';
+import handlerRss from './Handlers/handlerRss.js';
+import {watchedStateRss, watchedError} from './View/watcherFormRss.js';
 import ru from './Text/ru.js';
 
 const init = () => {
@@ -35,8 +35,8 @@ const init = () => {
       return state;
     })
     .then((state) => {
-      const watchedStateRsS = watchedStateRss(state),
-        watchedErroR = watchedError(state);
+      const watchedStateRsS = watchedStateRss(state);
+      const watchedErroR = watchedError(state);
       handlerRss(state, watchedStateRsS, watchedErroR);
     });
 };

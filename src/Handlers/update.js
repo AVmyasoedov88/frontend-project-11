@@ -13,9 +13,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
           watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
         })
 
-        .then((response) => {
-          return parser(response);
-        });
+        .then((response) => parser(response));
     });
 
   Promise.all(promises)
