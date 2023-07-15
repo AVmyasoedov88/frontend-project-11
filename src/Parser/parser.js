@@ -1,7 +1,4 @@
-/* eslint-disable */
-import _ from 'lodash';
-
-const parser = (response) => {
+const parser = (state, i18nextInstance, response, id) => {
   try {
     const parse = new DOMParser();
 
@@ -22,13 +19,13 @@ const parser = (response) => {
         title: item.querySelector('title').textContent,
         link: item.querySelector('link').textContent,
         description: item.querySelector('description').textContent,
-        id: _.uniqueId(),
+        id
       };
     });
 
     return [feeds, topics];
   } catch (error) {
-    throw new Error('Ресурс не содержит валидный RSS');
+    throw new Error(i18nextInstance.t('form.errorNotRss'));
   }
 };
 

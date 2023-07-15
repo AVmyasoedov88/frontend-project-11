@@ -1,55 +1,137 @@
-/* eslint-disable */
 import onChange from 'on-change';
-import { renderRss, renderErr } from '../Render/renderRssForm.js';
-import {
-  renderContentFeeds,
-  renderFeeds,
-  renderTopics,
-} from '../Render/renderContent.js';
 
-const input = document.querySelector('.form-control'),
-  watchedStateRss = (state) => {
-    const watcher = onChange(state, (path, value) => {
-      if (path === 'form.value') {
-        renderRss();
-      }
+const renderRss = (i18nextInstance, elements) => {
+  const { feedback, input } = elements;
+  feedback.classList.remove('text-danger');
+  input.classList.remove('is-invalid');
+  feedback.classList.add('text-success');
+  feedback.textContent = i18nextInstance.t('form.succsessRss');
+  input.value = '';
+  input.focus();
+};
 
-      if (path === 'content.feeds') {
-        renderContentFeeds();
+const renderErr = (err, elements) => {
+  const { feedback, input } = elements;
+  feedback.classList.remove('text-success');
+  feedback.classList.add('text-danger');
+  input.classList.add('is-invalid');
+  feedback.textContent = `${err}`;
+};
+
+const renderContentTitle = (nameTitle) => {
+  const divCardBorder = document.createElement('div');
+  const cardBody = document.createElement('div');
+  const h2Title = document.createElement('h2');
+  const ul = document.createElement('ul');
+  divCardBorder.classList.add('card', 'border-0');
+  cardBody.classList.add('card-body');
+  h2Title.classList.add('card-title', 'h4');
+  ul.classList.add('list-group', 'border-0', 'rounded-0');
+  divCardBorder.append(cardBody, ul);
+  cardBody.append(h2Title);
+  nameTitle.append(divCardBorder);
+};
+
+const renderFeeds = (feeds) => {
+  const ulFeed = document.querySelector('.feeds ul');
+  const li = document.createElement('li');
+  const h3 = document.createElement('h3');
+  const p = document.createElement('p');
+  li.classList.add('list-group-item', 'border-0', 'border-end-0');
+  h3.classList.add('h6', 'm-0');
+  p.classList.add('m-0', 'small', 'text-black-50');
+
+  h3.textContent = feeds[feeds.length - 1].title;
+  p.textContent = feeds[feeds.length - 1].description;
+  li.append(h3, p);
+  ulFeed.prepend(li);
+};
+
+const renderTopics = (topics) => {
+  const ulTopics = document.querySelector('.posts ul');
+
+  topics.forEach((element) => {
+    element.forEach((item) => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      const button = document.createElement('button');
+      li.classList.add(
+        'list-group-item',
+        'd-flex',
+        'justify-content-between',
+        'align-items-start',
+        'border-0',
+        'border-end-0',
+      );
+
+      a.classList.add('fw-bold');
+      a.dataset.id = item.id;
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+      button.setAttribute('type', 'button');
+      button.dataset.id = item.id;
+      button.dataset.bsToggle = 'modal';
+      button.dataset.bsTarget = '#modal';
+      a.setAttribute('href', item.link);
+      a.textContent = item.title;
+      button.textContent = 'Просмотр';
+      li.append(a, button);
+      ulTopics.prepend(li);
+    });
+  });
+};
+
+const renderContentFeeds = (i18nextInstance) => {
+  const feedsContaner = document.querySelector('.feeds');
+  const postsContaner = document.querySelector('.posts');
+  if (feedsContaner.textContent === '') {
+    renderContentTitle(feedsContaner);
+    renderContentTitle(postsContaner);
+    const titleFeed = document.querySelector('.feeds h2');
+    const titlePost = document.querySelector('.posts h2');
+    titleFeed.textContent = i18nextInstance.t('text.feeds');
+    titlePost.textContent = i18nextInstance.t('text.posts');
+  }
+};
+
+export default function watchedStateRss(state, i18nextInstance, elements) {
+  const watcher = onChange(state, (path, value) => {
+    switch (path) {
+      case 'form.statusRss':
+        renderRss(i18nextInstance, elements);
+        break;
+
+      case 'content.feeds':
+        renderContentFeeds(i18nextInstance);
         renderFeeds(value);
-      }
-      if (path === 'content.topics') {
+        break;
+
+      case 'content.topics':
         renderTopics(value);
-      }
+        break;
 
-      if (path === 'form.btnAddStatus') {
-        const btn = document.querySelector(
-          '.h-100, btn btn-lg btn-primary px-sm-5',
-        );
-        // console.log(btn)
+      case 'form.btnAddStatus':
         if (value === 'send') {
-          btn.disabled = true;
+          elements.btnAdd.disabled = true;
         } else {
-          btn.disabled = false;
+          elements.btnAdd.disabled = false;
         }
-      }
+        break;
 
-      if (path === 'form.isInputClear') {
-        if (value) {
-          input.value = '';
-        }
-      }
-    });
+      case 'form.isInputClear' && value:
+        elements.input.value = '';
+        break;
 
-    return watcher;
-  },
-  watchedError = (state) => {
-    const watcher = onChange(state.error, (path, value) => {
-      if (path === 'errorMessage') {
-        renderErr(value);
-      }
-    });
-    return watcher;
-  };
+      case 'errorMessage':
+        renderErr(value, elements);
+        break;
 
-export { watchedStateRss, watchedError };
+      default:
+        console.log('Что-то случилось');
+        break;
+    }
+  });
+
+  return watcher;
+}

@@ -4,16 +4,16 @@ import _ from 'lodash';
 import getProxiUrl from './getProxiUrl.js';
 import parser from '../Parser/parser.js';
 
-const upDate = (state, watchedStateRsS, watchedErroR) => {
+const upDate = (state, i18nextInstance, watchedStateRsS, id) => {
   const { urls } = state.form;
   const promises = urls.map((url) => {
     const newUrl = getProxiUrl(url);
     return axios
       .get(newUrl.toString())
       .catch(() => {
-        watchedErroR.errorMessage = state.i18n.t('form.errorAxios');
+        watchedStateRsS.errorMessage = i18nextInstance.t('form.errorAxios');
       })
-      .then((response) => parser(response));
+      .then((response) => parser(state, i18nextInstance, response, id));
   });
 
   Promise.all(promises)
@@ -28,6 +28,7 @@ const upDate = (state, watchedStateRsS, watchedErroR) => {
         watchedStateRsS.content.topics.push(newTopicS);
       }
     }))
-    .then(() => setTimeout(() => upDate(state, watchedStateRsS, watchedErroR), 5000));
+    .then(() => setTimeout(() => upDate(state, i18nextInstance, watchedStateRsS, id), 5000))
+    .finally(() => console.log(state))
 };
 export default upDate;
