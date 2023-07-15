@@ -5,3 +5,4 @@ assets
 .prettierrc.json
 .eslintignore
 .npmrc
+babel.config.json

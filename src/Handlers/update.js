@@ -29,6 +29,6 @@ const upDate = (state, i18nextInstance, watchedStateRsS, id) => {
       }
     }))
     .then(() => setTimeout(() => upDate(state, i18nextInstance, watchedStateRsS, id), 5000))
-    .finally(() => console.log(state))
+    //.finally(() => console.log(state))
 };
 export default upDate;
