@@ -1,4 +1,3 @@
-/* eslint-disable */
 const makeModalWindow = (state) => {
   const modalButtons = document.querySelectorAll('.btn-sm');
   const modalHeader = document.querySelector('.modal-header');

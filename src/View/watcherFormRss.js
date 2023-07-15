@@ -7,6 +7,7 @@ const renderRss = (i18nextInstance, elements) => {
   feedback.classList.add('text-success');
   feedback.textContent = i18nextInstance.t('form.succsessRss');
   input.value = '';
+  console.log(input);
   input.focus();
 };
 

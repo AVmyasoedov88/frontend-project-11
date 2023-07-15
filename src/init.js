@@ -65,6 +65,7 @@ const init = () => {
         state.error.errorMessage = '';
         state.form.value = rss;
         watchedStateRsS.form.btnAddStatus = 'send';
+        watchedStateRsS.form.statusRss = false;
       })
       .then(() => getProxiUrl(state.form.value))
       .then((newUrl) =>
@@ -78,7 +79,6 @@ const init = () => {
         state.form.urls.push(state.form.value);
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
-        watchedStateRsS.form.btnAddStatus = 'notSend';
       })
       .then(() => {
         setTimeout(
@@ -90,6 +90,9 @@ const init = () => {
       .catch((err) => {
         // watchedErroR.errorStatus = false;
         watchedStateRsS.errorMessage = err.message;
+      })
+      .finally(() => {
+        watchedStateRsS.form.btnAddStatus = 'notSend';
       });
   });
 };
