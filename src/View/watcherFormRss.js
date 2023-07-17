@@ -7,7 +7,6 @@ const renderRss = (i18nextInstance, elements) => {
   feedback.classList.add('text-success');
   feedback.textContent = i18nextInstance.t('form.succsessRss');
   input.value = '';
-  console.log(input);
   input.focus();
 };
 
@@ -96,6 +95,29 @@ const renderContentFeeds = (i18nextInstance) => {
   }
 };
 
+const renderModal = (state) => {
+  const modalHeader = document.querySelector('.modal-header');
+  const modalBody = document.querySelector('.modal-body');
+  const modalReadFull = document.querySelector('.modal-footer a');
+  const { modalPostId } = state.modal;
+  const { topics } = state.content;
+  const currentTopic = document.querySelector(`[data-id="${modalPostId}"]`);
+  currentTopic.classList.remove('fw-bold');
+  currentTopic.classList.add('fw-normal');
+  const dataForModal = {};
+  topics.map((topic) => {
+    const temp = topic.filter((item) => item.id === modalPostId);
+    return temp.map((obj) => {
+      dataForModal.title = obj.title;
+      dataForModal.description = obj.description;
+      dataForModal.link = obj.link;
+    });
+  });
+
+  modalHeader.textContent = dataForModal.title;
+  modalBody.textContent = dataForModal.description;
+  modalReadFull.href = dataForModal.link;
+};
 export default function watchedStateRss(state, i18nextInstance, elements) {
   const watcher = onChange(state, (path, value) => {
     switch (path) {
@@ -126,6 +148,10 @@ export default function watchedStateRss(state, i18nextInstance, elements) {
 
       case 'errorMessage':
         renderErr(value, elements);
+        break;
+
+      case 'modal.modalPostId':
+        renderModal(state);
         break;
 
       default:

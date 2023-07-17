@@ -8,23 +8,16 @@ import ru from './Text/ru.js';
 import parser from './Parser/parser.js';
 import validator from './Validator/validator.js';
 import getProxiUrl from './Handlers/getProxiUrl.js';
-import upDate from './Handlers/update.js';
-import makeModalWindow from './Handlers/makeModalWindow.js';
+import updatePosts from './Handlers/updatePosts.js';
+import { clickButton, clickTitle } from './Handlers/makeModalWindow.js';
 
-const init = () => {
+const init = (i18nextInstance) => {
   const elements = {
     form: document.querySelector('.rss-form'),
     btnAdd: document.querySelector('.h-100, btn btn-lg btn-primary px-sm-5'),
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('.form-control'),
   };
-
-  const i18nextInstance = i18next.createInstance();
-  i18nextInstance.init({
-    lng: 'ru',
-    debug: true,
-    resources: ru,
-  });
 
   setLocale({
     mixed: {
@@ -51,14 +44,18 @@ const init = () => {
       errorMessage: null,
       errorStatus: null,
     },
+    modal: {
+      viewPosts: [],
+      modalPostId: null,
+    },
   };
 
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
+  setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const id = _.uniqueId();
 
     validator(formData.get('url'), state, i18nextInstance)
       .then((rss) => {
@@ -69,12 +66,36 @@ const init = () => {
       })
       .then(() => getProxiUrl(state.form.value))
       .then((newUrl) =>
-        axios.get(newUrl.toString()).catch(() => {
+        axios.get(newUrl).catch(() => {
           throw new Error(i18nextInstance.t('form.errorAxios'));
         }),
       )
-      .then((response) => parser(state, i18nextInstance, response, id))
-      .then(([feeds, topics]) => {
+      .then((response) => {
+        const result = parser(state, i18nextInstance, response);
+        const parseError = result.querySelector('parsererror');
+        if (parseError) {
+          const error = new Error(parseError.textContent);
+          error.isParseError = true;
+          console.log(error)
+          throw error;
+        }
+
+        const [feeds, topics] = result;
+        console.log(topics);
+        topics.forEach((topic) => (topic.id = _.uniqueId()));
+        console.log(topics);
+        watchedStateRsS.form.statusRss = true;
+        state.form.urls.push(state.form.value);
+        watchedStateRsS.content.feeds.push(feeds);
+        watchedStateRsS.content.topics.push(topics);
+        setTimeout(
+          () => updatePosts(state, i18nextInstance, watchedStateRsS),
+          5000,
+        );
+        clickButton(state, watchedStateRsS);
+        clickTitle(state, watchedStateRsS);
+      })
+      /* .then(([feeds, topics]) => {
         watchedStateRsS.form.statusRss = true;
         state.form.urls.push(state.form.value);
         watchedStateRsS.content.feeds.push(feeds);
@@ -86,13 +107,14 @@ const init = () => {
           5000,
         );
       })
-      .then(() => makeModalWindow(state))
+      .then(() => makeModalWindow(state)) */
       .catch((err) => {
         // watchedErroR.errorStatus = false;
         watchedStateRsS.errorMessage = err.message;
       })
       .finally(() => {
         watchedStateRsS.form.btnAddStatus = 'notSend';
+        // console.log(state)
       });
   });
 };

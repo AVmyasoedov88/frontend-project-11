@@ -1,4 +1,4 @@
-const parser = (state, i18nextInstance, response, id) => {
+const parser = (state, i18nextInstance, response) => {
   try {
     const parse = new DOMParser();
 
@@ -14,14 +14,11 @@ const parser = (state, i18nextInstance, response, id) => {
 
     const items = Array.from(result.querySelectorAll('item'));
 
-    const topics = items.map((item) => {
-      return {
-        title: item.querySelector('title').textContent,
-        link: item.querySelector('link').textContent,
-        description: item.querySelector('description').textContent,
-        id
-      };
-    });
+    const topics = items.map((item) => ({
+      title: item.querySelector('title').textContent,
+      link: item.querySelector('link').textContent,
+      description: item.querySelector('description').textContent,
+    }));
 
     return [feeds, topics];
   } catch (error) {
