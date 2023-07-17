@@ -72,14 +72,7 @@ const init = (i18nextInstance) => {
       )
       .then((response) => {
         const result = parser(state, i18nextInstance, response);
-        const parseError = result.querySelector('parsererror');
-        if (parseError) {
-          const error = new Error(parseError.textContent);
-          error.isParseError = true;
-          console.log(error)
-          throw error;
-        }
-
+       
         const [feeds, topics] = result;
         console.log(topics);
         topics.forEach((topic) => (topic.id = _.uniqueId()));
