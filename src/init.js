@@ -11,6 +11,7 @@ import getProxiUrl from './Handlers/getProxiUrl.js';
 import updatePosts from './Handlers/updatePosts.js';
 import makeModalWindow from './Handlers/makeModalWindow.js';
 
+
 const init = (i18nextInstance) => {
   const elements = {
     form: document.querySelector('.rss-form'),
@@ -114,4 +115,16 @@ const init = (i18nextInstance) => {
       });
   });
 };
+const runApp = async () => {
+  const i18nextInstance = i18next.createInstance();
+  await i18nextInstance.init({
+    lng: 'ru',
+    debug: true,
+    resources: ru,
+  });
+
+  init(i18nextInstance);
+};
+
+runApp()
 export default init;
