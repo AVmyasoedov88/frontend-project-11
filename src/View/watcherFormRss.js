@@ -114,8 +114,13 @@ const renderModal = (state) => {
     });
   });
 
+  if (dataForModal.description.match(/<h1>/)) {
+    modalBody.innerHTML = dataForModal.description;  // решил так, как на сайте https://buzzfeed.com/world.xml description c тегами
+  } else {
+    modalBody.textContent = dataForModal.description;
+  }
+
   modalHeader.textContent = dataForModal.title;
-  modalBody.textContent = dataForModal.description;
   modalReadFull.href = dataForModal.link;
 };
 export default function watchedStateRss(state, i18nextInstance, elements) {

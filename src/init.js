@@ -9,7 +9,7 @@ import parser from './Parser/parser.js';
 import validator from './Validator/validator.js';
 import getProxiUrl from './Handlers/getProxiUrl.js';
 import updatePosts from './Handlers/updatePosts.js';
-import { clickButton, clickTitle } from './Handlers/makeModalWindow.js';
+import makeModalWindow from './Handlers/makeModalWindow.js';
 
 const init = (i18nextInstance) => {
   const elements = {
@@ -51,7 +51,7 @@ const init = (i18nextInstance) => {
   };
 
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
-  setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
+  //setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -72,7 +72,7 @@ const init = (i18nextInstance) => {
       )
       .then((response) => {
         const result = parser(state, i18nextInstance, response);
-       
+
         const [feeds, topics] = result;
         console.log(topics);
         topics.forEach((topic) => (topic.id = _.uniqueId()));
@@ -85,8 +85,7 @@ const init = (i18nextInstance) => {
           () => updatePosts(state, i18nextInstance, watchedStateRsS),
           5000,
         );
-        clickButton(state, watchedStateRsS);
-        clickTitle(state, watchedStateRsS);
+        makeModalWindow(state, watchedStateRsS);
       })
       /* .then(([feeds, topics]) => {
         watchedStateRsS.form.statusRss = true;
@@ -108,6 +107,10 @@ const init = (i18nextInstance) => {
       .finally(() => {
         watchedStateRsS.form.btnAddStatus = 'notSend';
         // console.log(state)
+        setTimeout(
+          () => updatePosts(state, i18nextInstance, watchedStateRsS),
+          5000,
+        );
       });
   });
 };

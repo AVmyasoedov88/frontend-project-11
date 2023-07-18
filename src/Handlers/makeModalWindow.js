@@ -1,5 +1,7 @@
-const clickButton = (state, watchedStateRsS) => {
+const makeModalWindow = (state, watchedStateRsS) => {
   const modalButtons = document.querySelectorAll('.btn-sm');
+  const titles = document.querySelectorAll('li a');
+
   modalButtons.forEach((modalButton) => {
     modalButton.addEventListener('click', (event) => {
       event.preventDefault();
@@ -11,10 +13,6 @@ const clickButton = (state, watchedStateRsS) => {
       watchedStateRsS.modal.modalPostId = idmodalButton;
     });
   });
-};
-
-const clickTitle = (state, watchedStateRsS) => {
-  const titles = document.querySelectorAll('li a');
 
   titles.forEach((title) => {
     title.addEventListener('click', (event) => {
@@ -28,4 +26,4 @@ const clickTitle = (state, watchedStateRsS) => {
   });
 };
 
-export { clickButton, clickTitle };
+export default makeModalWindow;
