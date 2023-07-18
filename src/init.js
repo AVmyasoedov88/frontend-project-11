@@ -74,10 +74,9 @@ const init = async () => {
         watchedStateRsS.form.statusRss = false;
       })
       .then(() => getProxiUrl(state.form.value))
-      .then((newUrl) =>
-        axios.get(newUrl).catch(() => {
-          throw new Error(i18nextInstance.t('form.errorAxios'));
-        }),
+      .then((newUrl) => axios.get(newUrl).catch(() => {
+        throw new Error(i18nextInstance.t('form.errorAxios'));
+      }),
       )
       .then((response) => {
         const result = parser(state, i18nextInstance, response);
