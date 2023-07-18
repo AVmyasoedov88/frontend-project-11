@@ -11,7 +11,6 @@ import getProxiUrl from './Handlers/getProxiUrl.js';
 import updatePosts from './Handlers/updatePosts.js';
 import makeModalWindow from './Handlers/makeModalWindow.js';
 
-
 const init = (i18nextInstance) => {
   const elements = {
     form: document.querySelector('.rss-form'),
@@ -34,6 +33,7 @@ const init = (i18nextInstance) => {
     content: {
       feeds: [],
       topics: [],
+      updated: [],
     },
     form: {
       value: '',
@@ -52,13 +52,14 @@ const init = (i18nextInstance) => {
   };
 
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
-  //setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
+  // setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const { urls } = state.form;
 
-    validator(formData.get('url'), state, i18nextInstance)
+    validator(formData.get('url'), urls, i18nextInstance)
       .then((rss) => {
         state.error.errorMessage = '';
         state.form.value = rss;
@@ -73,34 +74,15 @@ const init = (i18nextInstance) => {
       )
       .then((response) => {
         const result = parser(state, i18nextInstance, response);
-
         const [feeds, topics] = result;
-        console.log(topics);
         topics.forEach((topic) => (topic.id = _.uniqueId()));
-        console.log(topics);
         watchedStateRsS.form.statusRss = true;
         state.form.urls.push(state.form.value);
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
-        setTimeout(
-          () => updatePosts(state, i18nextInstance, watchedStateRsS),
-          5000,
-        );
         makeModalWindow(state, watchedStateRsS);
       })
-      /* .then(([feeds, topics]) => {
-        watchedStateRsS.form.statusRss = true;
-        state.form.urls.push(state.form.value);
-        watchedStateRsS.content.feeds.push(feeds);
-        watchedStateRsS.content.topics.push(topics);
-      })
-      .then(() => {
-        setTimeout(
-          () => upDate(state, i18nextInstance, watchedStateRsS, id),
-          5000,
-        );
-      })
-      .then(() => makeModalWindow(state)) */
+
       .catch((err) => {
         // watchedErroR.errorStatus = false;
         watchedStateRsS.errorMessage = err.message;
@@ -115,16 +97,4 @@ const init = (i18nextInstance) => {
       });
   });
 };
-const runApp = async () => {
-  const i18nextInstance = i18next.createInstance();
-  await i18nextInstance.init({
-    lng: 'ru',
-    debug: true,
-    resources: ru,
-  });
-
-  init(i18nextInstance);
-};
-
-runApp()
 export default init;

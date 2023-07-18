@@ -8,12 +8,10 @@ const parser = (state, i18nextInstance, response) => {
   const parseError = result.querySelector('parsererror');
   if (parseError) {
     const error = new Error(i18nextInstance.t('form.errorNotRss'));
-    console.log(error);
     error.isParseError = true;
     throw error;
   }
-  // console.log(result)
-
+  
   const feeds = {
     title: result.querySelector('channel title').textContent,
     description: result.querySelector('channel description').textContent,
