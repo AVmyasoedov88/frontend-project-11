@@ -11,7 +11,6 @@ const parser = (state, i18nextInstance, response) => {
     error.isParseError = true;
     throw error;
   }
-  
   const feeds = {
     title: result.querySelector('channel title').textContent,
     description: result.querySelector('channel description').textContent,

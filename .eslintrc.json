@@ -13,6 +13,6 @@
         "function-paren-newline": ["error", "consistent"],
         "import/extensions": 0,
         "no-param-reassign":"off",
-        "implicit-arrow-linebreak": ["error", "beside"]
+        "implicit-arrow-linebreak":"off"
 }
 }

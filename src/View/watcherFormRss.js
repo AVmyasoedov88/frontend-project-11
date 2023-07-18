@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import onChange from 'on-change';
 
 const renderRss = (i18nextInstance, elements) => {
@@ -115,7 +116,7 @@ const renderModal = (state) => {
   });
 
   if (dataForModal.description.match(/<h1>/)) {
-    modalBody.innerHTML = dataForModal.description;  // решил так, как на сайте https://buzzfeed.com/world.xml description c тегами
+    modalBody.innerHTML = dataForModal.description; // решил так, как на сайте https://buzzfeed.com/world.xml description c тегами
   } else {
     modalBody.textContent = dataForModal.description;
   }

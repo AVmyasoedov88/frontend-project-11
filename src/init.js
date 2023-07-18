@@ -1,23 +1,30 @@
+/* eslint-disable function-paren-newline, no-return-assign */
 import i18next from 'i18next';
 import { setLocale } from 'yup';
 import axios from 'axios';
 import _ from 'lodash';
 import watchedStateRss from './View/watcherFormRss.js';
 import ru from './Text/ru.js';
-
 import parser from './Parser/parser.js';
 import validator from './Validator/validator.js';
 import getProxiUrl from './Handlers/getProxiUrl.js';
 import updatePosts from './Handlers/updatePosts.js';
 import makeModalWindow from './Handlers/makeModalWindow.js';
 
-const init = (i18nextInstance) => {
+const init = async () => {
   const elements = {
     form: document.querySelector('.rss-form'),
     btnAdd: document.querySelector('.h-100, btn btn-lg btn-primary px-sm-5'),
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('.form-control'),
   };
+
+  const i18nextInstance = i18next.createInstance();
+  await i18nextInstance.init({
+    lng: 'ru',
+    debug: true,
+    resources: ru,
+  });
 
   setLocale({
     mixed: {
