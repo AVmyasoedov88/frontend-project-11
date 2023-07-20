@@ -17,6 +17,7 @@ const init = async () => {
     input: document.querySelector('.form-control'),
     modalButtons: document.querySelectorAll('.btn-sm'),
     titles: document.querySelectorAll('li a '),
+    posts: document.querySelector('.posts'),
   };
 
   const i18nextInstance = i18next.createInstance();
@@ -95,10 +96,6 @@ const init = async () => {
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
   setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
-  if (elements.titles) {
-    makeModalWindow(state, watchedStateRsS);
-  }
-
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -132,6 +129,15 @@ const init = async () => {
         watchedStateRsS.errorMessage = err.message;
         watchedStateRsS.contentLoading = 'failed';
       });
+  });
+
+  elements.posts.addEventListener('click', (event) => {
+    if (!event.target.dataset.id) return;
+    const idmodalButton = event.target.dataset.id;
+    const { viewPosts } = state.modal;
+    if (viewPosts.includes(idmodalButton)) return;
+    state.modal.viewPosts.push(idmodalButton);
+    watchedStateRsS.modal.modalPostId = idmodalButton;
   });
 };
 export default init;
