@@ -7,8 +7,6 @@ import watchedStateRss from './View/watcherFormRss.js';
 import ru from './Text/ru.js';
 import parser from './Parser/parser.js';
 import validator from './Validator/validator.js';
-import getProxiUrl from './Handlers/getProxiUrl.js';
-import updatePosts from './Handlers/updatePosts.js';
 import makeModalWindow from './Handlers/makeModalWindow.js';
 
 const init = async () => {
@@ -17,6 +15,8 @@ const init = async () => {
     btnAdd: document.querySelector('.h-100, btn btn-lg btn-primary px-sm-5'),
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('.form-control'),
+    modalButtons: document.querySelectorAll('.btn-sm'),
+    titles: document.querySelectorAll('li a '),
   };
 
   const i18nextInstance = i18next.createInstance();
@@ -40,66 +40,97 @@ const init = async () => {
     content: {
       feeds: [],
       topics: [],
-      updated: [],
-    },
-    form: {
-      value: '',
       urls: [],
-      btnAddStatus: 'notSend',
-      statusRss: false,
     },
     error: {
-      errorMessage: null,
-      errorStatus: null,
+      errorMessage: '',
     },
+
+    contentLoading: '',
     modal: {
       viewPosts: [],
       modalPostId: null,
     },
   };
 
+  const getProxiUrl = (value) => {
+    const newUrl = new URL('https://allorigins.hexlet.app/get?');
+    newUrl.searchParams.set('url', `${value}`);
+    newUrl.searchParams.set('disableCache', true);
+    return newUrl.toString();
+  };
+
+  const updatePosts = (content, translater, watcher) => {
+    const { urls } = content.content;
+    if (urls.length === 0) return;
+    const promises = urls.map((url) => {
+      const newUrl = getProxiUrl(url);
+      return axios
+        .get(newUrl)
+        .then((response) => {
+          const parserData = parser(content, translater, response);
+          const [, topics] = parserData;
+          topics.forEach((topic) => (topic.id = _.uniqueId()));
+          const oldTopics = content.content.topics.map((topic) =>
+            topic.map((item) => item.title),
+          );
+          const flatOldTopics = _.flatten(oldTopics);
+          const newTopicS = topics.filter(
+            (topic) => !flatOldTopics.includes(topic.title),
+          );
+          if (newTopicS.length !== 0) {
+            watcher.content.topics.push(newTopicS);
+          }
+        })
+
+        .catch(() => {
+          watcher.errorMessage = i18nextInstance.t('form.errorAxios');
+        });
+    });
+
+    Promise.all(promises).finally(() =>
+      setTimeout(() => updatePosts(content, translater, watcher), 5000),
+    );
+  };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
-  // setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
+  setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
+
+  if (elements.titles) {
+    makeModalWindow(state, watchedStateRsS);
+  }
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const { urls } = state.form;
+    const { urls } = state.content;
 
     validator(formData.get('url'), urls, i18nextInstance)
-      .then((rss) => {
+      .then(() => {
         state.error.errorMessage = '';
-        state.form.value = rss;
-        watchedStateRsS.form.btnAddStatus = 'send';
-        watchedStateRsS.form.statusRss = false;
+        watchedStateRsS.contentLoading = 'loading';
+
+        return getProxiUrl(formData.get('url'));
       })
-      .then(() => getProxiUrl(state.form.value))
-      .then((newUrl) => axios.get(newUrl).catch(() => {
-        throw new Error(i18nextInstance.t('form.errorAxios'));
-      }),
+      .then((newUrl) =>
+        axios.get(newUrl).catch(() => {
+          throw new Error(i18nextInstance.t('form.errorAxios'));
+        }),
       )
+
       .then((response) => {
-        const result = parser(state, i18nextInstance, response);
+        const result = parser(response);
         const [feeds, topics] = result;
         topics.forEach((topic) => (topic.id = _.uniqueId()));
-        watchedStateRsS.form.statusRss = true;
-        state.form.urls.push(state.form.value);
+
+        state.content.urls.push(formData.get('url'));
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
-        makeModalWindow(state, watchedStateRsS);
+        watchedStateRsS.contentLoading = 'idle';
       })
 
       .catch((err) => {
-        // watchedErroR.errorStatus = false;
         watchedStateRsS.errorMessage = err.message;
-      })
-      .finally(() => {
-        watchedStateRsS.form.btnAddStatus = 'notSend';
-        // console.log(state)
-        setTimeout(
-          () => updatePosts(state, i18nextInstance, watchedStateRsS),
-          5000,
-        );
+        watchedStateRsS.contentLoading = 'failed';
       });
   });
 };

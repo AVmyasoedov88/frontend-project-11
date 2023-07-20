@@ -1,4 +1,4 @@
-const parser = (state, i18nextInstance, response) => {
+const parser = (response) => {
   const parse = new DOMParser();
 
   const result = parse.parseFromString(
@@ -7,7 +7,7 @@ const parser = (state, i18nextInstance, response) => {
   );
   const parseError = result.querySelector('parsererror');
   if (parseError) {
-    const error = new Error(i18nextInstance.t('form.errorNotRss'));
+    const error = new Error(parseError.textContent);
     error.isParseError = true;
     throw error;
   }

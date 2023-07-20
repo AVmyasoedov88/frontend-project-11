@@ -12,10 +12,10 @@ const renderRss = (i18nextInstance, elements) => {
 };
 
 const renderErr = (err, elements) => {
-  const { feedback, input } = elements;
-  feedback.classList.remove('text-success');
+  const { feedback } = elements;
+  /* feedback.classList.remove('text-success');
   feedback.classList.add('text-danger');
-  input.classList.add('is-invalid');
+  input.classList.add('is-invalid'); */
   feedback.textContent = `${err}`;
 };
 
@@ -48,7 +48,7 @@ const renderFeeds = (feeds) => {
   ulFeed.prepend(li);
 };
 
-const renderTopics = (topics) => {
+const renderTopics = (topics, i18nextInstance) => {
   const ulTopics = document.querySelector('.posts ul');
 
   topics.forEach((element) => {
@@ -76,7 +76,7 @@ const renderTopics = (topics) => {
       button.dataset.bsTarget = '#modal';
       a.setAttribute('href', item.link);
       a.textContent = item.title;
-      button.textContent = 'Просмотр';
+      button.textContent = i18nextInstance.t('text.btnText');
       li.append(a, button);
       ulTopics.prepend(li);
     });
@@ -127,29 +127,33 @@ const renderModal = (state) => {
 export default function watchedStateRss(state, i18nextInstance, elements) {
   const watcher = onChange(state, (path, value) => {
     switch (path) {
-      case 'form.statusRss':
-        renderRss(i18nextInstance, elements);
-        break;
-
       case 'content.feeds':
         renderContentFeeds(i18nextInstance);
         renderFeeds(value);
         break;
 
       case 'content.topics':
-        renderTopics(value);
+        renderTopics(value, i18nextInstance);
         break;
 
-      case 'form.btnAddStatus':
-        if (value === 'send') {
+      case 'contentLoading':
+        if (value === 'loading') {
           elements.btnAdd.disabled = true;
-        } else {
-          elements.btnAdd.disabled = false;
+          elements.input.setAttribute('readonly', 'readonly');
         }
-        break;
-
-      case 'form.isInputClear' && value:
-        elements.input.value = '';
+        if (value === 'failed') {
+          elements.btnAdd.disabled = false;
+          const { feedback, input } = elements;
+          feedback.classList.remove('text-success');
+          feedback.classList.add('text-danger');
+          input.classList.add('is-invalid');
+          elements.input.removeAttribute('readonly');
+        }
+        if (value === 'idle') {
+          renderRss(i18nextInstance, elements);
+          elements.btnAdd.disabled = false;
+          elements.input.removeAttribute('readonly');
+        }
         break;
 
       case 'errorMessage':
