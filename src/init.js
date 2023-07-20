@@ -5,9 +5,8 @@ import axios from 'axios';
 import _ from 'lodash';
 import watchedStateRss from './View/watcherFormRss.js';
 import ru from './Text/ru.js';
-import parser from './Parser/parser.js';
-import validator from './Validator/validator.js';
-import makeModalWindow from './Handlers/makeModalWindow.js';
+import parser from './tools/parser.js';
+import validator from './tools/validator.js';
 
 const init = async () => {
   const elements = {
@@ -15,8 +14,6 @@ const init = async () => {
     btnAdd: document.querySelector('.h-100, btn btn-lg btn-primary px-sm-5'),
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('.form-control'),
-    modalButtons: document.querySelectorAll('.btn-sm'),
-    titles: document.querySelectorAll('li a '),
     posts: document.querySelector('.posts'),
   };
 
