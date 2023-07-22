@@ -12,11 +12,7 @@
     "rules": {
         "function-paren-newline": ["error", "consistent"],
         "import/extensions": 0,
-        "no-param-reassign":"off",
-        "no-shadow":"off",
-        "no-return-assign": "off",
-        "implicit-arrow-linebreak":"off"
-        
+        "no-param-reassign":"off" 
        
 }
 }
