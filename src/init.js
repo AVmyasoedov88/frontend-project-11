@@ -26,6 +26,7 @@ const init = async () => {
 
   setLocale({
     mixed: {
+      notOneOf: i18nextInstance.t('form.errorDubl'),
       default: 'field_invalid',
     },
     string: {
@@ -58,18 +59,18 @@ const init = async () => {
     return newUrl.toString();
   };
 
-  const updatePosts = (content, translater, watcher) => {
-    const { urls } = content.content;
-    if (urls.length === 0) return;
+  const updatePosts = (state, i18nextInstance, watchedStateRsS) => {
+    const { urls } = state.content;
+
     const promises = urls.map((url) => {
       const newUrl = getProxiUrl(url);
       return axios
         .get(newUrl)
         .then((response) => {
-          const parserData = parser(content, translater, response);
+          const parserData = parser(response);
           const [, topics] = parserData;
           topics.forEach((topic) => (topic.id = _.uniqueId()));
-          const oldTopics = content.content.topics.map((topic) =>
+          const oldTopics = state.content.topics.map((topic) =>
             topic.map((item) => item.title),
           );
           const flatOldTopics = _.flatten(oldTopics);
@@ -77,54 +78,67 @@ const init = async () => {
             (topic) => !flatOldTopics.includes(topic.title),
           );
           if (newTopicS.length !== 0) {
-            watcher.content.topics.push(newTopicS);
+            watchedStateRsS.content.topics.push(newTopicS);
           }
         })
 
-        .catch(() => {
-          watcher.errorMessage = i18nextInstance.t('form.errorAxios');
+        .catch((error) => {
+          if (error.isParseError === true) {
+            error.message = i18nextInstance.t('form.errorNotRss');
+          }
+          if (error.message === 'Network Error') {
+            error.message = i18nextInstance.t('form.errorAxios');
+          }
+          watchedStateRsS.errorMessage = error.message;
         });
     });
 
     Promise.all(promises).finally(() =>
-      setTimeout(() => updatePosts(content, translater, watcher), 5000),
+      setTimeout(
+        () => updatePosts(state, i18nextInstance, watchedStateRsS),
+        5000,
+      ),
     );
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
+
   setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const url = formData.get('url');
     const { urls } = state.content;
 
-    validator(formData.get('url'), urls, i18nextInstance)
+    validator(url, urls)
       .then(() => {
         state.error.errorMessage = '';
         watchedStateRsS.contentLoading = 'loading';
-
-        return getProxiUrl(formData.get('url'));
+        const newUrl = getProxiUrl(url);
+        return axios.get(newUrl);
       })
-      .then((newUrl) =>
-        axios.get(newUrl).catch(() => {
-          throw new Error(i18nextInstance.t('form.errorAxios'));
-        }),
-      )
-
       .then((response) => {
         const result = parser(response);
         const [feeds, topics] = result;
         topics.forEach((topic) => (topic.id = _.uniqueId()));
-
-        state.content.urls.push(formData.get('url'));
+        state.content.urls.push(url);
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
         watchedStateRsS.contentLoading = 'idle';
       })
 
-      .catch((err) => {
-        watchedStateRsS.errorMessage = err.message;
+      .catch((error) => {
+        if (error.isParseError === true) {
+          error.message = i18nextInstance.t('form.errorNotRss');
+        }
+        if (error.message === 'Network Error') {
+          error.message = i18nextInstance.t('form.errorAxios');
+        }
+        watchedStateRsS.errorMessage = error.message;
         watchedStateRsS.contentLoading = 'failed';
+      })
+      .finally(() => {
+        console.log(state);
       });
   });
 
@@ -132,9 +146,9 @@ const init = async () => {
     if (!event.target.dataset.id) return;
     const idmodalButton = event.target.dataset.id;
     const { viewPosts } = state.modal;
+    watchedStateRsS.modal.modalPostId = idmodalButton;
     if (viewPosts.includes(idmodalButton)) return;
     state.modal.viewPosts.push(idmodalButton);
-    watchedStateRsS.modal.modalPostId = idmodalButton;
   });
 };
 export default init;

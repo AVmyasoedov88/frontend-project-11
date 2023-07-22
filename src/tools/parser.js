@@ -5,6 +5,7 @@ const parser = (response) => {
     response.data.contents,
     'application/xml',
   );
+
   const parseError = result.querySelector('parsererror');
   if (parseError) {
     const error = new Error(parseError.textContent);
@@ -14,6 +15,7 @@ const parser = (response) => {
   const feeds = {
     title: result.querySelector('channel title').textContent,
     description: result.querySelector('channel description').textContent,
+    link: result.querySelector('link').textContent,
   };
 
   const items = Array.from(result.querySelectorAll('item'));
