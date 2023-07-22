@@ -67,9 +67,12 @@ const init = async () => {
         .then((response) => {
           const parserData = parser(response);
           const [, topics] = parserData;
-          topics.forEach((topic) => (topic.id = _.uniqueId()));
+          topics.forEach((topic) => {
+            return (topic.id = _.uniqueId());
+          });
           const oldTopics = statE.content.topics.map((topic) =>
-            topic.map((item) => item.title));
+            topic.map((item) => item.title),
+          );
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title),
@@ -94,7 +97,8 @@ const init = async () => {
       setTimeout(
         () => updatePosts(state, i18nextInstance, watchedStateRsS),
         5000,
-      ));
+      ),
+    );
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
@@ -115,7 +119,9 @@ const init = async () => {
       .then((response) => {
         const result = parser(response);
         const [feeds, topics] = result;
-        topics.forEach((topic) => (topic.id = _.uniqueId()));
+        topics.forEach((topic) => {
+          return topic.id = _.uniqueId();
+        });
         feeds.url = url;
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
