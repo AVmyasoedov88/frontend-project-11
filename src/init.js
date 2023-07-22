@@ -57,8 +57,8 @@ const init = async () => {
     return newUrl.toString();
   };
 
-  const updatePosts = (state, i18nextInstance, watchedStateRsS) => {
-    const urls = state.content.feeds.map((feed) => feed.url);
+  const updatePosts = (statE, i18nextInstancE, watchedStateRsS) => {
+    const urls = statE.content.feeds.map((feed) => feed.url);
 
     const promises = urls.map((url) => {
       const newUrl = getProxiUrl(url);
@@ -68,7 +68,7 @@ const init = async () => {
           const parserData = parser(response);
           const [, topics] = parserData;
           topics.forEach((topic) => (topic.id = _.uniqueId()));
-          const oldTopics = state.content.topics.map((topic) =>
+          const oldTopics = statE.content.topics.map((topic) =>
             topic.map((item) => item.title));
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
@@ -81,10 +81,10 @@ const init = async () => {
 
         .catch((error) => {
           if (error.isParseError === true) {
-            error.message = i18nextInstance.t('form.errorNotRss');
+            error.message = i18nextInstancE.t('form.errorNotRss');
           }
           if (error.message === 'Network Error') {
-            error.message = i18nextInstance.t('form.errorAxios');
+            error.message = i18nextInstancE.t('form.errorAxios');
           }
           watchedStateRsS.errorMessage = error.message;
         });
