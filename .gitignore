@@ -6,5 +6,5 @@ assets
 .eslintignore
 .npmrc
 babel.config
-
+.eslintrc.json
 .vercel

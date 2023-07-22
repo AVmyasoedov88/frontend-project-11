@@ -15,7 +15,7 @@ const parser = (response) => {
   const feeds = {
     title: result.querySelector('channel title').textContent,
     description: result.querySelector('channel description').textContent,
-    };
+  };
 
   const items = Array.from(result.querySelectorAll('item'));
 

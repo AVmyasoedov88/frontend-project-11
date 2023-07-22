@@ -1,4 +1,3 @@
-/* eslint-disable function-paren-newline, no-return-assign */
 import i18next from 'i18next';
 import { setLocale } from 'yup';
 import axios from 'axios';
@@ -70,8 +69,7 @@ const init = async () => {
           const [, topics] = parserData;
           topics.forEach((topic) => (topic.id = _.uniqueId()));
           const oldTopics = state.content.topics.map((topic) =>
-            topic.map((item) => item.title),
-          );
+            topic.map((item) => item.title));
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title),
@@ -96,8 +94,7 @@ const init = async () => {
       setTimeout(
         () => updatePosts(state, i18nextInstance, watchedStateRsS),
         5000,
-      ),
-    );
+      ));
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
@@ -108,7 +105,6 @@ const init = async () => {
     const formData = new FormData(event.target);
     const url = formData.get('url');
     const urls = state.content.feeds.map((feed) => feed.url);
-    
     validator(url, urls)
       .then(() => {
         state.error.errorMessage = '';
@@ -135,9 +131,6 @@ const init = async () => {
         }
         watchedStateRsS.errorMessage = error.message;
         watchedStateRsS.contentLoading = 'failed';
-      })
-      .finally(() => {
-        console.log(state);
       });
   });
 
