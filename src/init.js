@@ -39,7 +39,6 @@ const init = async () => {
     content: {
       feeds: [],
       topics: [],
-      urls: [],
     },
     error: {
       errorMessage: '',
@@ -60,7 +59,7 @@ const init = async () => {
   };
 
   const updatePosts = (state, i18nextInstance, watchedStateRsS) => {
-    const { urls } = state.content;
+    const urls = state.content.feeds.map((feed) => feed.url);
 
     const promises = urls.map((url) => {
       const newUrl = getProxiUrl(url);
@@ -108,8 +107,8 @@ const init = async () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const url = formData.get('url');
-    const { urls } = state.content;
-
+    const urls = state.content.feeds.map((feed) => feed.url);
+    
     validator(url, urls)
       .then(() => {
         state.error.errorMessage = '';
@@ -121,7 +120,7 @@ const init = async () => {
         const result = parser(response);
         const [feeds, topics] = result;
         topics.forEach((topic) => (topic.id = _.uniqueId()));
-        state.content.urls.push(url);
+        feeds.url = url;
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
         watchedStateRsS.contentLoading = 'idle';
