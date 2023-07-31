@@ -1,10 +1,8 @@
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable no-return-assign */
 import i18next from 'i18next';
 import { setLocale } from 'yup';
 import axios from 'axios';
 import _ from 'lodash';
-import watchedStateRss from './View/watcherFormRss.js';
+import watchedStateRss from './View/watcher.js';
 import ru from './Text/ru.js';
 import parser from './tools/parser.js';
 import validator from './tools/validator.js';
@@ -16,6 +14,11 @@ const init = async () => {
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('.form-control'),
     posts: document.querySelector('.posts'),
+    feedsContaner: document.querySelector('.feeds'),
+    postsContaner: document.querySelector('.posts'),
+    modalHeader: document.querySelector('.modal-header'),
+    modalBody: document.querySelector('.modal-body'),
+    modalReadFull: document.querySelector('.modal-footer a'),
   };
 
   const i18nextInstance = i18next.createInstance();
@@ -41,12 +44,12 @@ const init = async () => {
       feeds: [],
       topics: [],
     },
-    error: {
+    form: {
       errorMessage: '',
     },
 
     contentLoading: '',
-    modal: {
+    UIState: {
       viewPosts: [],
       modalPostId: null,
     },
@@ -69,9 +72,12 @@ const init = async () => {
         .then((response) => {
           const parserData = parser(response);
           const [, topics] = parserData;
-          topics.forEach((topic) => (topic.id = _.uniqueId()));
+          topics.forEach((topic) => {
+            topic.id = _.uniqueId();
+          });
           const oldTopics = statE.content.topics.map((topic) =>
-            topic.map((item) => item.title));
+            topic.map((item) => item.title),
+          );
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title),
@@ -82,13 +88,7 @@ const init = async () => {
         })
 
         .catch((error) => {
-          if (error.isParseError === true) {
-            error.message = i18nextInstancE.t('form.errorNotRss');
-          }
-          if (error.message === 'Network Error') {
-            error.message = i18nextInstancE.t('form.errorAxios');
-          }
-          watchedStateRsS.errorMessage = error.message;
+          console.log(error);
         });
     });
 
@@ -96,10 +96,23 @@ const init = async () => {
       setTimeout(
         () => updatePosts(state, i18nextInstance, watchedStateRsS),
         5000,
-      ));
+      ),
+    );
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
+  function typeError(error) {
+    let message = '';
+    if (error.isParseError === true) {
+      message = i18nextInstance.t('form.errorNotRss');
+    }
+    if (error.message === 'Network Error') {
+      message = i18nextInstance.t('form.errorAxios');
+    } else {
+      message = error.message;
+    }
+    return message;
+  }
   setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
   elements.form.addEventListener('submit', (event) => {
@@ -109,7 +122,7 @@ const init = async () => {
     const urls = state.content.feeds.map((feed) => feed.url);
     validator(url, urls)
       .then(() => {
-        state.error.errorMessage = '';
+        state.form.errorMessage = '';
         watchedStateRsS.contentLoading = 'loading';
         const newUrl = getProxiUrl(url);
         return axios.get(newUrl);
@@ -117,7 +130,9 @@ const init = async () => {
       .then((response) => {
         const result = parser(response);
         const [feeds, topics] = result;
-        topics.forEach((topic) => (topic.id = _.uniqueId()));
+        topics.forEach((topic) => {
+          topic.id = _.uniqueId();
+        });
         feeds.url = url;
         watchedStateRsS.content.feeds.push(feeds);
         watchedStateRsS.content.topics.push(topics);
@@ -125,13 +140,7 @@ const init = async () => {
       })
 
       .catch((error) => {
-        if (error.isParseError === true) {
-          error.message = i18nextInstance.t('form.errorNotRss');
-        }
-        if (error.message === 'Network Error') {
-          error.message = i18nextInstance.t('form.errorAxios');
-        }
-        watchedStateRsS.errorMessage = error.message;
+        watchedStateRsS.errorMessage = typeError(error);
         watchedStateRsS.contentLoading = 'failed';
       });
   });
@@ -139,10 +148,10 @@ const init = async () => {
   elements.posts.addEventListener('click', (event) => {
     if (!event.target.dataset.id) return;
     const idmodalButton = event.target.dataset.id;
-    const { viewPosts } = state.modal;
-    watchedStateRsS.modal.modalPostId = idmodalButton;
+    const { viewPosts } = state.UIState;
+    watchedStateRsS.UIState.modalPostId = idmodalButton;
     if (viewPosts.includes(idmodalButton)) return;
-    state.modal.viewPosts.push(idmodalButton);
+    state.UIState.viewPosts.push(idmodalButton);
   });
 };
 export default init;

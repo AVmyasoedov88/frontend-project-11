@@ -1,7 +1,6 @@
-/* eslint-disable array-callback-return */
 import onChange from 'on-change';
 
-const renderClickButton = (value, elements, i18nextInstance) => {
+const renderForm = (value, elements, i18nextInstance) => {
   const { feedback, input } = elements;
   switch (value) {
     case 'loading':
@@ -54,14 +53,13 @@ const renderContentTitle = (nameTitle) => {
 };
 
 const renderFeeds = (feeds) => {
-  const ulFeed = document.querySelector('.feeds ul');
+  const ulFeed = document.querySelector('.feeds ul'); // в elements не отображается
   const li = document.createElement('li');
   const h3 = document.createElement('h3');
   const p = document.createElement('p');
   li.classList.add('list-group-item', 'border-0', 'border-end-0');
   h3.classList.add('h6', 'm-0');
   p.classList.add('m-0', 'small', 'text-black-50');
-
   h3.textContent = feeds[feeds.length - 1].title;
   p.textContent = feeds[feeds.length - 1].description;
   li.append(h3, p);
@@ -69,8 +67,7 @@ const renderFeeds = (feeds) => {
 };
 
 const renderTopics = (topics, i18nextInstance) => {
-  const ulTopics = document.querySelector('.posts ul');
-
+  const ulTopics = document.querySelector('.posts ul'); // в elements не отображается
   topics.forEach((element) => {
     element.forEach((item) => {
       const li = document.createElement('li');
@@ -103,9 +100,8 @@ const renderTopics = (topics, i18nextInstance) => {
   });
 };
 
-const renderContentFeeds = (i18nextInstance) => {
-  const feedsContaner = document.querySelector('.feeds');
-  const postsContaner = document.querySelector('.posts');
+const renderContentFeeds = (i18nextInstance, elements) => {
+  const { feedsContaner, postsContaner } = elements;
   if (feedsContaner.textContent === '') {
     renderContentTitle(feedsContaner);
     renderContentTitle(postsContaner);
@@ -116,19 +112,16 @@ const renderContentFeeds = (i18nextInstance) => {
   }
 };
 
-const renderModal = (state) => {
-  const modalHeader = document.querySelector('.modal-header');
-  const modalBody = document.querySelector('.modal-body');
-  const modalReadFull = document.querySelector('.modal-footer a');
-  const { modalPostId } = state.modal;
+const renderModal = (state, elements) => {
+  const { modalPostId } = state.UIState;
   const { topics } = state.content;
   const currentTopic = document.querySelector(`[data-id="${modalPostId}"]`);
   currentTopic.classList.remove('fw-bold');
   currentTopic.classList.add('fw-normal');
   const dataForModal = {};
-  topics.map((topic) => {
+  topics.forEach((topic) => {
     const temp = topic.filter((item) => item.id === modalPostId);
-    return temp.map((obj) => {
+    temp.forEach((obj) => {
       dataForModal.title = obj.title;
       dataForModal.description = obj.description;
       dataForModal.link = obj.link;
@@ -136,36 +129,36 @@ const renderModal = (state) => {
   });
 
   if (dataForModal.description.match(/<h1>/)) {
-    modalBody.innerHTML = dataForModal.description; // решил так, как на сайте https://buzzfeed.com/world.xml description c тегами
+    elements.modalBody.textContent = dataForModal.description;
   } else {
-    modalBody.textContent = dataForModal.description;
+    elements.modalBody.textContent = dataForModal.description;
   }
 
-  modalHeader.textContent = dataForModal.title;
-  modalReadFull.href = dataForModal.link;
+  elements.modalHeader.textContent = dataForModal.title;
+  elements.modalReadFull.href = dataForModal.link;
 };
 export default function watchedStateRss(state, i18nextInstance, elements) {
   const watcher = onChange(state, (path, value) => {
     switch (path) {
       case 'content.feeds':
-        renderContentFeeds(i18nextInstance);
-        renderFeeds(value);
+        renderContentFeeds(i18nextInstance, elements);
+        renderFeeds(value, elements);
         break;
 
       case 'content.topics':
-        renderTopics(value, i18nextInstance);
+        renderTopics(value, i18nextInstance, elements);
         break;
 
       case 'contentLoading':
-        renderClickButton(value, elements, i18nextInstance);
+        renderForm(value, elements, i18nextInstance);
         break;
 
       case 'errorMessage':
         renderErr(value, elements);
         break;
 
-      case 'modal.modalPostId':
-        renderModal(state);
+      case 'UIState.modalPostId':
+        renderModal(state, elements);
         break;
 
       default:

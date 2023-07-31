@@ -12,7 +12,8 @@
     "rules": {
         "function-paren-newline": ["error", "consistent"],
         "import/extensions": 0,
-        "no-param-reassign":"off" 
+        "no-param-reassign":"off",
+        "implicit-arrow-linebreak":"off"
        
 }
 }
