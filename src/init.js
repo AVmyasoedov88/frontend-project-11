@@ -76,8 +76,7 @@ const init = async () => {
             topic.id = _.uniqueId();
           });
           const oldTopics = statE.content.topics.map((topic) =>
-            topic.map((item) => item.title),
-          );
+            topic.map((item) => item.title));
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title),
@@ -96,8 +95,7 @@ const init = async () => {
       setTimeout(
         () => updatePosts(state, i18nextInstance, watchedStateRsS),
         5000,
-      ),
-    );
+      ));
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 

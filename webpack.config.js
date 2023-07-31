@@ -38,7 +38,7 @@ export default {
     ],
   },
   output: {
-    path: path.resolve(__dirname, './public'),
+    path: path.resolve(__dirname, './dist'),
     filename: 'index_bundle.js',
   },
   plugins: [
