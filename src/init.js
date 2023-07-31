@@ -102,16 +102,14 @@ const init = async () => {
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
   function typeError(error) {
-    let message = '';
     if (error.isParseError === true) {
-      message = i18nextInstance.t('form.errorNotRss');
+      return i18nextInstance.t('form.errorNotRss');
     }
     if (error.message === 'Network Error') {
-      message = i18nextInstance.t('form.errorAxios');
-    } else {
-      message = error.message;
+      return i18nextInstance.t('form.errorAxios');
     }
-    return message;
+
+    return error.message;
   }
   setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000);
 
