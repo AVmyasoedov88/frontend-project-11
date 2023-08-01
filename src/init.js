@@ -75,8 +75,7 @@ const init = async () => {
           topics.forEach((topic) => {
             topic.id = _.uniqueId();
           });
-          const oldTopics = statE.content.topics.map((topic) =>
-            topic.map((item) => item.title));
+          const oldTopics = statE.content.topics.map((topic) => topic.map((item) => item.title));
           const flatOldTopics = _.flatten(oldTopics);
           const newTopicS = topics.filter(
             (topic) => !flatOldTopics.includes(topic.title),
@@ -92,10 +91,7 @@ const init = async () => {
     });
 
     Promise.all(promises).finally(() =>
-      setTimeout(
-        () => updatePosts(state, i18nextInstance, watchedStateRsS),
-        5000,
-      ));
+      setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000));
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
