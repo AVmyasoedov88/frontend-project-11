@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 import i18next from 'i18next';
 import { setLocale } from 'yup';
 import axios from 'axios';
