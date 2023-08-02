@@ -7,5 +7,5 @@ RSS – это специальный файл в формате (rss или xml
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/0b92955db78000d6a42a/maintainability)](https://codeclimate.com/github/AVmyasoedov88/frontend-project-11/maintainability)
 
-[**Versel**](https://rss-coral-nine.vercel.app)
+[**Versel**](https://rss-d4b790jvl-avmyasoedov88.vercel.app/)
 
