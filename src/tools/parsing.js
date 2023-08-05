@@ -1,4 +1,4 @@
-const parser = (response) => {
+const parsing = (response) => {
   const parse = new DOMParser();
 
   const result = parse.parseFromString(
@@ -12,20 +12,21 @@ const parser = (response) => {
     error.isParseError = true;
     throw error;
   }
-  const feeds = {
+
+  const feed = {
     title: result.querySelector('channel title').textContent,
     description: result.querySelector('channel description').textContent,
   };
 
   const items = Array.from(result.querySelectorAll('item'));
 
-  const topics = items.map((item) => ({
+  const topic = items.map((item) => ({
     title: item.querySelector('title').textContent,
     link: item.querySelector('link').textContent,
     description: item.querySelector('description').textContent,
   }));
 
-  return [feeds, topics];
+  return { feed, topic };
 };
 
-export default parser;
+export default parsing;

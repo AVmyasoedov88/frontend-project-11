@@ -5,7 +5,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import watchedStateRss from './View/watcher.js';
 import ru from './Text/ru.js';
-import parser from './tools/parser.js';
+import parsing from './tools/parsing.js';
 import validator from './tools/validator.js';
 
 const init = async () => {
@@ -49,7 +49,7 @@ const init = async () => {
       errorMessage: '',
     },
 
-    contentLoading: '',
+    feedsLoading: 'idle',
     UIState: {
       viewPosts: [],
       modalPostId: null,
@@ -65,34 +65,33 @@ const init = async () => {
 
   const updatePosts = (statE, i18nextInstancE, watchedStateRsS) => {
     const urls = statE.content.feeds.map((feed) => feed.url);
+    const oldTopics = _.flatten(statE.content.topics).map((item) => item.title);
 
     const promises = urls.map((url) => {
       const newUrl = getProxiUrl(url);
       return axios
         .get(newUrl)
         .then((response) => {
-          const parserData = parser(response);
-          const [, topics] = parserData;
-          topics.forEach((topic) => {
-            topic.id = _.uniqueId();
+          const parserData = parsing(response);
+          const { topic } = parserData;
+          topic.forEach((item) => {
+            item.id = _.uniqueId();
           });
-          const oldTopics = statE.content.topics.map((topic) => topic.map((item) => item.title));
-          const flatOldTopics = _.flatten(oldTopics);
-          const newTopicS = topics.filter(
-            (topic) => !flatOldTopics.includes(topic.title),
+
+          const newTopicS = topic.filter(
+            (item) => !oldTopics.includes(item.title),
           );
           if (newTopicS.length !== 0) {
             watchedStateRsS.content.topics.push(newTopicS);
           }
-        })
-
-        .catch((error) => {
-          console.log(error);
         });
     });
 
     Promise.all(promises).finally(() =>
-      setTimeout(() => updatePosts(state, i18nextInstance, watchedStateRsS), 5000));
+      setTimeout(
+        () => updatePosts(state, i18nextInstance, watchedStateRsS),
+        5000,
+      ));
   };
   const watchedStateRsS = watchedStateRss(state, i18nextInstance, elements);
 
@@ -113,28 +112,30 @@ const init = async () => {
     const formData = new FormData(event.target);
     const url = formData.get('url');
     const urls = state.content.feeds.map((feed) => feed.url);
+
+    watchedStateRsS.feedsLoading = 'loading';
     validator(url, urls)
       .then(() => {
         state.form.errorMessage = '';
-        watchedStateRsS.contentLoading = 'loading';
         const newUrl = getProxiUrl(url);
         return axios.get(newUrl);
       })
       .then((response) => {
-        const result = parser(response);
-        const [feeds, topics] = result;
-        topics.forEach((topic) => {
-          topic.id = _.uniqueId();
+        const result = parsing(response);
+        const { feed, topic } = result;
+        feed.url = url;
+        topic.forEach((item) => {
+          item.id = _.uniqueId();
         });
-        feeds.url = url;
-        watchedStateRsS.content.feeds.push(feeds);
-        watchedStateRsS.content.topics.push(topics);
-        watchedStateRsS.contentLoading = 'idle';
+
+        watchedStateRsS.content.feeds.push(feed);
+        watchedStateRsS.content.topics.push(topic);
+        watchedStateRsS.feedsLoading = 'idle';
       })
 
       .catch((error) => {
         watchedStateRsS.errorMessage = typeError(error);
-        watchedStateRsS.contentLoading = 'failed';
+        watchedStateRsS.feedsLoading = 'failed';
       });
   });
 

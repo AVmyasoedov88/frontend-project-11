@@ -1,4 +1,6 @@
+/* eslint-disable array-callback-return */
 import onChange from 'on-change';
+import _ from 'lodash';
 
 const renderForm = (value, elements, i18nextInstance) => {
   const { feedback, input } = elements;
@@ -28,7 +30,6 @@ const renderForm = (value, elements, i18nextInstance) => {
       break;
 
     default:
-      console.log('Что-то случилось');
       break;
   }
 };
@@ -52,7 +53,7 @@ const renderContentTitle = (nameTitle) => {
   nameTitle.append(divCardBorder);
 };
 
-const renderFeeds = (feeds) => {
+const renderFeed = (feeds) => {
   const ulFeed = document.querySelector('.feeds ul'); // в elements не отображается
   const li = document.createElement('li');
   const h3 = document.createElement('h3');
@@ -67,36 +68,34 @@ const renderFeeds = (feeds) => {
 };
 
 const renderTopics = (topics, i18nextInstance) => {
-  const ulTopics = document.querySelector('.posts ul'); // в elements не отображается
-  topics.forEach((element) => {
-    element.forEach((item) => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      const button = document.createElement('button');
-      li.classList.add(
-        'list-group-item',
-        'd-flex',
-        'justify-content-between',
-        'align-items-start',
-        'border-0',
-        'border-end-0',
-      );
+  const ulTopics = document.querySelector('.posts ul');
+  _.flatten(topics).forEach((item) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    const button = document.createElement('button');
+    li.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0',
+    );
 
-      a.classList.add('fw-bold');
-      a.dataset.id = item.id;
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-      button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-      button.setAttribute('type', 'button');
-      button.dataset.id = item.id;
-      button.dataset.bsToggle = 'modal';
-      button.dataset.bsTarget = '#modal';
-      a.setAttribute('href', item.link);
-      a.textContent = item.title;
-      button.textContent = i18nextInstance.t('text.btnText');
-      li.append(a, button);
-      ulTopics.prepend(li);
-    });
+    a.classList.add('fw-bold');
+    a.dataset.id = item.id;
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    button.setAttribute('type', 'button');
+    button.dataset.id = item.id;
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#modal';
+    a.setAttribute('href', item.link);
+    a.textContent = item.title;
+    button.textContent = i18nextInstance.t('text.btnText');
+    li.append(a, button);
+    ulTopics.prepend(li);
   });
 };
 
@@ -118,22 +117,18 @@ const renderModal = (state, elements) => {
   const currentTopic = document.querySelector(`[data-id="${modalPostId}"]`);
   currentTopic.classList.remove('fw-bold');
   currentTopic.classList.add('fw-normal');
+  const flatTopic = _.flatten(topics);
   const dataForModal = {};
-  topics.forEach((topic) => {
-    const temp = topic.filter((item) => item.id === modalPostId);
-    temp.forEach((obj) => {
-      dataForModal.title = obj.title;
-      dataForModal.description = obj.description;
-      dataForModal.link = obj.link;
-    });
+
+  flatTopic.filter((item) => {
+    if (item.id === modalPostId) {
+      dataForModal.title = item.title;
+      dataForModal.description = item.description;
+      dataForModal.link = item.link;
+    }
   });
 
-  if (dataForModal.description.match(/<h1>/)) {
-    elements.modalBody.textContent = dataForModal.description;
-  } else {
-    elements.modalBody.textContent = dataForModal.description;
-  }
-
+  elements.modalBody.textContent = dataForModal.description;
   elements.modalHeader.textContent = dataForModal.title;
   elements.modalReadFull.href = dataForModal.link;
 };
@@ -142,14 +137,14 @@ export default function watchedStateRss(state, i18nextInstance, elements) {
     switch (path) {
       case 'content.feeds':
         renderContentFeeds(i18nextInstance, elements);
-        renderFeeds(value, elements);
+        renderFeed(value);
         break;
 
       case 'content.topics':
-        renderTopics(value, i18nextInstance, elements);
+        renderTopics(value, i18nextInstance);
         break;
 
-      case 'contentLoading':
+      case 'feedsLoading':
         renderForm(value, elements, i18nextInstance);
         break;
 
@@ -162,7 +157,6 @@ export default function watchedStateRss(state, i18nextInstance, elements) {
         break;
 
       default:
-        console.log('Что-то случилось');
         break;
     }
   });
