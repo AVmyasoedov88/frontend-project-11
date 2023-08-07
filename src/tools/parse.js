@@ -20,13 +20,13 @@ const parsing = (response) => {
 
   const items = Array.from(result.querySelectorAll('item'));
 
-  const topic = items.map((item) => ({
+  const topics = items.map((item) => ({
     title: item.querySelector('title').textContent,
     link: item.querySelector('link').textContent,
     description: item.querySelector('description').textContent,
   }));
 
-  return { feed, topic };
+  return { feed, topics };
 };
 
 export default parsing;

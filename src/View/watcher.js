@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 import onChange from 'on-change';
-import _ from 'lodash';
 
 const renderForm = (value, elements, i18nextInstance) => {
   const { feedback, input } = elements;
@@ -69,7 +68,7 @@ const renderFeed = (feeds) => {
 
 const renderTopics = (topics, i18nextInstance) => {
   const ulTopics = document.querySelector('.posts ul');
-  _.flatten(topics).forEach((item) => {
+  topics.forEach((item) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     const button = document.createElement('button');
@@ -117,10 +116,8 @@ const renderModal = (state, elements) => {
   const currentTopic = document.querySelector(`[data-id="${modalPostId}"]`);
   currentTopic.classList.remove('fw-bold');
   currentTopic.classList.add('fw-normal');
-  const flatTopic = _.flatten(topics);
   const dataForModal = {};
-
-  flatTopic.filter((item) => {
+  topics.find((item) => {
     if (item.id === modalPostId) {
       dataForModal.title = item.title;
       dataForModal.description = item.description;
@@ -140,11 +137,11 @@ export default function watchedStateRss(state, i18nextInstance, elements) {
         renderFeed(value);
         break;
 
-      case 'content.topics':
-        renderTopics(value, i18nextInstance);
+      case 'topicStatus':
+        renderTopics(state.content.topics, i18nextInstance);
         break;
 
-      case 'feedsLoading':
+      case 'feedLoading':
         renderForm(value, elements, i18nextInstance);
         break;
 

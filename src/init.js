@@ -5,7 +5,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import watchedStateRss from './View/watcher.js';
 import ru from './Text/ru.js';
-import parsing from './tools/parsing.js';
+import parse from './tools/parse.js';
 import validator from './tools/validator.js';
 
 const init = async () => {
@@ -48,8 +48,8 @@ const init = async () => {
     form: {
       errorMessage: '',
     },
-
-    feedsLoading: 'idle',
+    topicStatus: 'adding',
+    feedLoading: 'idle',
     UIState: {
       viewPosts: [],
       modalPostId: null,
@@ -69,22 +69,20 @@ const init = async () => {
 
     const promises = urls.map((url) => {
       const newUrl = getProxiUrl(url);
-      return axios
-        .get(newUrl)
-        .then((response) => {
-          const parserData = parsing(response);
-          const { topic } = parserData;
-          topic.forEach((item) => {
-            item.id = _.uniqueId();
-          });
-
-          const newTopicS = topic.filter(
-            (item) => !oldTopics.includes(item.title),
-          );
-          if (newTopicS.length !== 0) {
-            watchedStateRsS.content.topics.push(newTopicS);
-          }
+      return axios.get(newUrl).then((response) => {
+        const parserData = parse(response);
+        const { topics } = parserData;
+        topics.forEach((item) => {
+          item.id = _.uniqueId();
         });
+
+        const newTopicS = topics.filter(
+          (item) => !oldTopics.includes(item.title),
+        );
+        if (newTopicS.length !== 0) {
+          watchedStateRsS.content.topics.push(newTopicS);
+        }
+      });
     });
 
     Promise.all(promises).finally(() =>
@@ -113,7 +111,8 @@ const init = async () => {
     const url = formData.get('url');
     const urls = state.content.feeds.map((feed) => feed.url);
 
-    watchedStateRsS.feedsLoading = 'loading';
+    watchedStateRsS.feedLoading = 'adding';
+    watchedStateRsS.topicStatus = 'adding';
     validator(url, urls)
       .then(() => {
         state.form.errorMessage = '';
@@ -121,21 +120,22 @@ const init = async () => {
         return axios.get(newUrl);
       })
       .then((response) => {
-        const result = parsing(response);
-        const { feed, topic } = result;
+        const result = parse(response);
+        const { feed, topics } = result;
         feed.url = url;
-        topic.forEach((item) => {
+        topics.forEach((item) => {
           item.id = _.uniqueId();
+          state.content.topics.push(item);
         });
 
         watchedStateRsS.content.feeds.push(feed);
-        watchedStateRsS.content.topics.push(topic);
-        watchedStateRsS.feedsLoading = 'idle';
+        watchedStateRsS.topicStatus = 'loaded';
+        watchedStateRsS.feedLoading = 'idle';
       })
 
       .catch((error) => {
         watchedStateRsS.errorMessage = typeError(error);
-        watchedStateRsS.feedsLoading = 'failed';
+        watchedStateRsS.feedLoading = 'failed';
       });
   });
 
